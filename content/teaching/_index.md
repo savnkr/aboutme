@@ -1,4 +1,5 @@
 ---
+active: False
 title: Teaching
 summary: My courses
 type: landing
