@@ -35,11 +35,11 @@ sections:
       title: '📚 My Research'
       subtitle: ''
       text: |-
-      I am a PhD candidate in Applied Mechanics at the Indian Institute of Technology (IIT) Delhi. My research focuses on utilizing advanced computational methods to solve complex engineering problems.
+        I am a PhD candidate in Applied Mechanics at the Indian Institute of Technology (IIT) Delhi. My research focuses on utilizing advanced computational methods to solve complex engineering problems.
 
-      My interests include Bayesian Machine learning,Gaussian processes for PDEs and physics-aware neural networks.
+        My interests include Bayesian Machine learning,Gaussian processes for PDEs and physics-aware neural networks.
 
-      Feel free to reach out if you’re interested in collaborating or learning more about my work!
+        Feel free to reach out if you’re interested in collaborating or learning more about my work!
     design:
       columns: '1'
   - block: collection
