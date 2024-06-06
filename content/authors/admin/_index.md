@@ -34,7 +34,7 @@ profiles:
     url: 'mailto:sawankr02@gmail.com'
     label: E-mail Me
   - icon: brands/x
-    url: https://x.com/home
+    url: https://twitter.com/GetResearchDev
   # - icon: brands/instagram
   #   url: https://www.instagram.com/
   - icon: brands/github
@@ -52,7 +52,7 @@ interests:
   - Physics-aware Deep learning
 
 education:
-  - area: "Ph.D., Applied Mechanics"
+  - area: "Ph.D., AI and ML"
     institution: "Indian Institute of Technology (IIT), Delhi"
     date_start: 2022-08-01
     date_end: ""
