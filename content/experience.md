@@ -1,7 +1,6 @@
 ---
-active: False
 title: 'Experience'
-date: 2023-10-24
+date: 2024-6-5
 type: landing
 
 design:
