@@ -5,10 +5,10 @@ cms_exclude: true
 
 # View
 view: card #article-grid
-cover_image: "/assets/media/blog1.jpg"  # Update with your image path
+cover: "/assets/media/blog1.jpg"  # Update with your image path
 # Optional cover image (relative to `assets/media/` folder).
 image:
   caption: ''
-  filename: '/assets/media/blog_cov1.jpg'
+  filename: 'blog_cov1.jpg'
 ---
 Welcome to my blog where I discuss various topics related to machine learning and AI.
