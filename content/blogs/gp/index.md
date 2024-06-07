@@ -1,14 +1,14 @@
 ---
 layout: post
 title: "📈Understanding Gaussian Processes"
-summary: Review of Gaussian Process
+summary: "Review of Gaussian Process"
 date: 2024-06-07
 categories: [Blog]
 tags: [machine learning, gaussian processes]
 image:
-    image credit: 'Image credit: [**Unsplash**](https://unsplash.com)'
+    caption: 'Image credit: [**Unsplash**](https://unsplash.com)'
 author:
--admin
+    -admin
 
 ---
 
@@ -22,7 +22,7 @@ A Gaussian Process is a collection of random variables, any finite number of whi
 
 - Regression
 - Classification
-- Optimization
+- Bayesian Optimization
 
 ## Conclusion
 
