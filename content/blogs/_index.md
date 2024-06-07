@@ -1,13 +1,13 @@
 ---
-title: Recent blogs
+title: Blog
 cms_exclude: true
 #url: talk
 
 # View
-view: card
+view: article-grid
 
 # Optional cover image (relative to `assets/media/` folder).
 image:
   caption: ''
-  filename: ''
+  filename: 'blog_cov'
 ---
