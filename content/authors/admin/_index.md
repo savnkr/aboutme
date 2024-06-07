@@ -106,7 +106,7 @@ skills:
       - name: Reading
         description: ''
         percent: 100
-        icon: book
+        icon: ''
       # - name: Photography
       #   description: ''
       #   percent: 80

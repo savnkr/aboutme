@@ -5,7 +5,7 @@ cms_exclude: true
 
 # View
 view: card #article-grid
-cover: "/assets/media/blog1.jpg"  # Update with your image path
+cover: "blog_cover"  # Update with your image path
 # Optional cover image (relative to `assets/media/` folder).
 image:
   caption: ''
