@@ -1,9 +1,15 @@
 ---
 layout: post
-title: "Understanding Gaussian Processes"
+title: "📈Understanding Gaussian Processes"
+summary: Review of Gaussian Process
 date: 2024-06-07
 categories: [Blog]
 tags: [machine learning, gaussian processes]
+image:
+    image credit: 'Image credit: [**Unsplash**](https://unsplash.com)'
+author:
+-admin
+
 ---
 
 Gaussian Processes (GPs) are powerful tools in machine learning for modeling and inference. They provide a probabilistic approach to learning in kernel machines.
