@@ -9,6 +9,7 @@ image:
     caption: 'Image credit: [**Unsplash**](https://unsplash.com)'
 author:
     -admin
+math: true
 
 ---
 
