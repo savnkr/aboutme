@@ -128,7 +128,7 @@ In this blog, we explored the mathematics behind vector-valued KRR and demonstra
 
 ## References and Further Reading
 
-Scholkopf, B., & Smola, A. J. (2001). Learning with Kernels: Support Vector Machines, Regularization, Optimization, and Beyond.
-Rasmussen, C. E., & Williams, C. K. I. (2006). Gaussian Processes for Machine Learning.
-Bishop, C. M. (2006). Pattern Recognition and Machine Learning.
+1. Scholkopf, B., & Smola, A. J. (2001). Learning with Kernels: Support Vector Machines, Regularization, Optimization, and Beyond.
+2. Rasmussen, C. E., & Williams, C. K. I. (2006). Gaussian Processes for Machine Learning.
+3. Bishop, C. M. (2006). Pattern Recognition and Machine Learning.
 
