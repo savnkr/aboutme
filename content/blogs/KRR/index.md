@@ -10,6 +10,7 @@ image:
 author:
     -admin
 math: true
+commentable: true
 ---
 
 ## Introduction

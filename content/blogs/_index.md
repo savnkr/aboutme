@@ -10,6 +10,6 @@ view: card #article-grid
 featured:
   image:
     caption: ''
-    filename: '/workspaces/aboutme/static/uploads/blog_cov.jpg'
+    filename: 'static/uploads/blog_cov.jpg'
 ---
 Welcome to my blog where I discuss various topics related to machine learning and AI
