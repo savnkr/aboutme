@@ -1,5 +1,5 @@
 ---
-title: Blog
+title: Blogs
 cms_exclude: true
 #url: talk
 
