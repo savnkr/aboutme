@@ -6,6 +6,7 @@ summary: "Vector valued Kernel ridge regression"
 categories: [Blog]
 tags: [machine learning, gaussian processes]
 image:
+    placement: 3
     caption: 'Image credit: [**Unsplash**](https://unsplash.com)'
 author:
     -admin
