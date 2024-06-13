@@ -7,9 +7,13 @@ cms_exclude: true
 view: card #article-grid
 # cover: "blog_cover"  # Update with your image path
 # Optional cover image (relative to `assets/media/` folder).
-featured:
-  image:
-    caption: ''
-    filename: 'static/uploads/blog_cov.jpg'
+# featured:
+#   image:
+#     caption: ''
+#     filename: 'static/uploads/blog_cov.jpg'
+
+banner:
+  image: 'blog_cov1.jpg'
+  caption: 'Image credit: '
 ---
 Welcome to my blog where I discuss various topics related to machine learning and AI
