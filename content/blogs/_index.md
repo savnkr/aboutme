@@ -13,7 +13,7 @@ view: card #article-grid
 #     filename: 'static/uploads/blog_cov.jpg'
 
 banner:
-  image: 'blog_cov1.jpg'
+  image: 'stacked-peaks.svg'
   caption: 'Image credit: '
 ---
 Welcome to my blog where I discuss various topics related to machine learning and AI
