@@ -25,7 +25,7 @@ sections:
         image:
           # Add your image background to `assets/media/`.
           # filename: ''
-          filename: blog_cov.jpg #stacked-peaks.svg
+          filename: stacked-peaks.svg
           filters:
             brightness: 1.0
           size: cover
