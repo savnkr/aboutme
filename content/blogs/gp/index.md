@@ -97,16 +97,6 @@ In classification, GPs can be used in conjunction with logistic or probit regres
 
 GPs are integral to Bayesian optimization, where the objective is to optimize an unknown function that is expensive to evaluate. GPs are used to model the objective function and guide the search for the optimum using acquisition functions such as Expected Improvement (EI) or Upper Confidence Bound (UCB).
 
-### Gaussian Process Prior Samples
-{{< rawhtml >}} 
-
-<video width=100% controls autoplay>
-    <source src="uploads/videos/GPriorSamples.mp4" type="video/webm">
-    Your browser does not support the video tag.  
-</video>
-
-{{< /rawhtml >}}
-
 ## Conclusion
 
 Gaussian Processes are a powerful tool for tasks requiring uncertainty quantification. Their flexibility and probabilistic nature make them suitable for a wide range of applications, from regression and classification to optimization. GPs are extensively used in fields such as geostatistics, computer graphics, and robotics.
