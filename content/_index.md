@@ -9,6 +9,22 @@ design:
   spacing: "6rem"
 
 sections:
+  - block: hero
+    design:
+      spacing:
+        # Customize the section spacing. Order is top, right, bottom, left.
+        padding: ['180px', '0', '180px', '0']
+      background:
+        # Choose a color such as from https://html-color-codes.info
+        color: 'black'
+        # Text color (true=light, false=dark, or remove for the dynamic theme color).
+        text_color_light: true
+        video:
+          # Name of video in `assets/media/`.
+          filename: hero.mp4
+          # Post-processing: flip the video horizontally?
+          flip: false
+
   - block: resume-biography-3
     content:
       # Choose a user profile to display (a folder name within `content/authors/`)
