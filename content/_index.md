@@ -14,7 +14,7 @@ sections:
       spacing:
         # Customize the section spacing. Order is top, right, bottom, left.
         # padding: ['180px', '0', '180px', '0']
-        padding: ['120px', '0', '120px', '0']
+        padding: ['60px', '0', '60px', '0']
       background:
         # Choose a color such as from https://html-color-codes.info
         color: 'black'
@@ -24,6 +24,7 @@ sections:
           # Name of video in `assets/media/`.
           filename: hero.mp4
           # Post-processing: flip the video horizontally?
+          caption: 'Image credit: [**Louis Tiao**](https://raw.githubusercontent.com/ltiao/tiao.io)'
           flip: false
 
   - block: resume-biography-3
