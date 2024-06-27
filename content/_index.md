@@ -13,7 +13,8 @@ sections:
     design:
       spacing:
         # Customize the section spacing. Order is top, right, bottom, left.
-        padding: ['180px', '0', '180px', '0']
+        # padding: ['180px', '0', '180px', '0']
+        padding: ['120px', '0', '120px', '0']
       background:
         # Choose a color such as from https://html-color-codes.info
         color: 'black'
