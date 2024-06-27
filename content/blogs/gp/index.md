@@ -89,6 +89,8 @@ $$
 \operatorname{Var}(f_*) = k(x_*, x_*) - k(x_*, X) [k(X, X) + \sigma_n^2 I]^{-1} k(X, x_*)
 $$
 
+{{< video src="GPriorSamples.mp4" >}}
+
 ### Classification
 
 In classification, GPs can be used in conjunction with logistic or probit regression to model the probability of class membership. The posterior inference is typically performed using approximate methods like Laplace approximation or variational inference.
