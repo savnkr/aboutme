@@ -24,7 +24,7 @@ role: PhD student
 
 # Organizations/Affiliations to display in Biography blox
 organizations:
-  - name: IIT Delhi
+  - name: IIT Delhi (AI-ML)
     url: https://home.iitd.ac.in/
 
 # Social network links
