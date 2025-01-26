@@ -8,7 +8,7 @@ authors:
 # - "Equal contribution"
 # - "Equal contribution"
 date: "2024-12-28T00:00:00Z"
-doi: ""
+# doi: ""
 
 # Schedule page publish date (NOT publication's date).
 publishDate: "2025-02-05T00:00:00Z"
@@ -34,7 +34,7 @@ featured: false
 links:
 - name: "CMAME"
   url: ""
-url_pdf: [paper link](https://doi.org/10.1016/j.cma.2024.117664)
+url_pdf: 'https://doi.org/10.1016/j.cma.2024.117664'
 # url_code: 'https://github.com/HugoBlox/hugo-blox-builder'
 url_dataset: ''
 url_poster: ''
