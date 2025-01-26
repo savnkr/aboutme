@@ -10,7 +10,7 @@ main:
   - name: Blogs
     url: blogs/
     weight: 11
-  - name: Papers
+  - name: Publications
     url: /#papers
   #   weight: 12
   # - name: News
