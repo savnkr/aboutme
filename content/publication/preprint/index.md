@@ -25,7 +25,6 @@ abstract: The study of neural operators has paved the way for the development of
 summary: A novel framework, Neural Operator-induced Gaussian Process (NOGaP), is proposed for solving PDEs with improved prediction accuracy and quantifiable uncertainty, evaluated on various examples like Burger’s equation and Darcy flow.
 
 tags:
-- Large Language Models
 - Neural Operators
 - Gaussian Process
 - PDEs
@@ -48,7 +47,7 @@ url_video: ''
 # Featured image
 # To use, add an image named `featured.jpg/png` to your page's folder. 
 image:
-  caption: 'Image credit: [**Unsplash**](https://unsplash.com/photos/s9CC2SKySJM)'
+  # caption: 'Image credit: [**Unsplash**](https://unsplash.com/photos/s9CC2SKySJM)'
   focal_point: ""
   preview_only: false
 
