@@ -34,15 +34,15 @@ profiles:
     url: 'mailto:sawankr02@gmail.com'
     label: E-mail Me
   - icon: brands/x
-    url: https://twitter.com/GetResearchDev
+    url: https://x.com/sawankr02
   # - icon: brands/instagram
   #   url: https://www.instagram.com/
   - icon: brands/github
     url: https://github.com/savnkr/
   - icon: brands/linkedin
-    url: https://www.linkedin.com/
+    url: https://www.linkedin.com/in/sawan-kumar-63030a150/
   - icon: academicons/google-scholar
-    url: https://scholar.google.com/
+    url: https://scholar.google.com/citations?user=mPzqn-UAAAAJ&hl=en
   # - icon: academicons/orcid
   #   url: https://orcid.org/
 
