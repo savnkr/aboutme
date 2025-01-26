@@ -1,14 +1,16 @@
 ---
 title: "Quotes"
+date: 26-01-2025
 description: "A collection of my favorite quotes."
 type: landing
+design:
+  spacing: '5rem'
 ---
 
 # Favorite Quotes
 
 Welcome to my collection of favorite quotes! Here, you'll find a variety of inspirational, motivational, and humorous quotes that resonate with me.
 
----
 
 ## Inspirational Quotes
 
