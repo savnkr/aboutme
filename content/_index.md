@@ -8,7 +8,7 @@ design:
   # Default section spacing
   spacing: "6rem"
 
-# sections:
+sections:
 #   - block: hero
 #     design:
 #       spacing:
