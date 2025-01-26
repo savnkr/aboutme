@@ -2,7 +2,7 @@
 title: "Quotes"
 date: 26-01-2025
 description: "A collection of my favorite quotes."
-type: landing
+type: page
 design:
   spacing: '5rem'
 ---
