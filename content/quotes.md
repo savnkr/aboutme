@@ -1,7 +1,7 @@
 ---
 title: "Quotes"
 description: "A collection of my favorite quotes."
-type: "landing"
+type: landing
 ---
 
 # Favorite Quotes
