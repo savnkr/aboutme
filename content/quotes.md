@@ -7,9 +7,7 @@ design:
   spacing: '5rem'
 ---
 
-# Favorite Quotes
-
-Welcome to my collection of favorite quotes! Here, you'll find a variety of inspirational, motivational, and humorous quotes that resonate with me.
+These are my collection of favorite quotes! Here, you'll find a variety of inspirational, motivational, and humorous quotes that resonate with me.
 
 
 ## Inspirational Quotes
@@ -42,4 +40,4 @@ Welcome to my collection of favorite quotes! Here, you'll find a variety of insp
 
 ---
 
-Feel free to reach out or suggest more quotes that inspire you!
+
