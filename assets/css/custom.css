@@ -1,0 +1,23 @@
+/* General body font size */
+body {
+    font-size: 14px; /* Adjust the base font size */
+}
+
+/* Style for blockquotes */
+blockquote {
+    font-size: 0.85rem; /* Smaller font size for quotes */
+    font-style: italic;
+    color: #555;
+    border-left: 4px solid #ddd;
+    padding: 10px 20px;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    line-height: 1.5; /* Better readability */
+}
+
+/* Style for the attribution */
+blockquote::after {
+    content: ''; /* Clear spacing for quotes */
+}
