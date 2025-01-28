@@ -15,7 +15,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Style for blog post content */
 .post-content, .post-body, .blog-content {
     font-family: 'Roboto', sans-serif;
-    font-size: 10px;                  /* Font size for blog content */
-    line-height: 3.0;                 /* Better spacing for readability */
+    font-size: 14px;                  /* Font size for blog content */
+    line-height: 1.0;                 /* Better spacing for readability */
     color: #333;                      /* Set text color */
 }
