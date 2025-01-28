@@ -12,6 +12,7 @@ author:
     -admin
 math: true
 commentable: true
+feedback: true
 ---
 
 ## Introduction
