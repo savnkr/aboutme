@@ -11,7 +11,7 @@ date: "2024-12-28T00:00:00Z"
 # doi: ""
 
 # Schedule page publish date (NOT publication's date).
-publishDate: "2025-02-05T00:00:00Z"
+publishDate: "2025-01-05T00:00:00Z"
 
 # Publication type.
 # Accepts a single type but formatted as a YAML list (for Hugo requirements).
@@ -28,7 +28,10 @@ abstract: The growing demand for accurate, efficient, and scalable solutions in 
 summary: This paper presents a GP-based neural operator for parametric differential equations, achieving high accuracy, scalability, and robust uncertainty estimation, outperforming traditional models.
 
 tags:
-- Source Themes
+- Neural Operators
+- Gaussian Process
+- PDEs
+- Uncertainty Quantification
 featured: true
 
 links:
