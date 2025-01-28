@@ -1,9 +1,2 @@
 /* Apply global font settings */
 
-/* Style for blog post content */
-.post-content, .post-body, .blog-content {
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px;                  /* Font size for blog content */
-    line-height: 5.0;                 /* Better spacing for readability */
-    color: #333;                      /* Set text color */
-}

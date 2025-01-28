@@ -7,7 +7,7 @@
 appearance:
   mode: system
   color: emerald
-  font: Roboto #Mr Robot
+  font: Inter #Roboto #Mr Robot
   font_size: xs
   fevicon: /favicon.png
   container_width: 1200px
@@ -54,7 +54,7 @@ footer:
 
 # Localization
 locale:
-  date_format: 'Jan 2, 2006'
+  date_format: 'Jan 2, 2025'
   time_format: '3:04 PM'
 
 # Site features
