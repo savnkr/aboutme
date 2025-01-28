@@ -29,7 +29,7 @@ summary: This paper presents a GP-based neural operator for parametric different
 
 tags:
 - Source Themes
-featured: false
+featured: true
 
 links:
 - name: "CMAME"
