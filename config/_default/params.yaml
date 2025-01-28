@@ -9,7 +9,7 @@ appearance:
   color: emerald
   font: Mr Robot
   font_size: s
-  fevicon: static/favicon.png
+  fevicon: /favicon.png
   container_width: 1200px
 
 # SEO
