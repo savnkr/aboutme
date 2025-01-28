@@ -65,7 +65,7 @@ sections:
 
       
   - block: collection
-    id: papers
+    # id: papers
     content:
       title: Publications
       filters:
