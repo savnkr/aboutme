@@ -2,15 +2,15 @@
 
 /* Change the width of the blog page */
 .max-w-screen-xl {
-    max-width: 1600px !important; /* Set the desired width */
+    max-width: 1500px !important; /* Set the desired width */
     margin: 0 auto;              /* Center the content */
 }
 
 /* Change the font globally */
 body, .prose, .prose-xl {
     font-family: 'Roboto', sans-serif; /* Replace with your desired font */
-    font-size: 16px;                  /* Adjust font size */
-    line-height: 1.6;                 /* Adjust line height for better readability */
+    font-size: 14px;                  /* Adjust font size */
+    line-height: 5.6;                 /* Adjust line height for better readability */
 }
 
 /* Further adjust blog-specific content */
