@@ -2,7 +2,7 @@
 
 /* Change the width of the blog page */
 .max-w-screen-xl {
-    max-width: 1200px !important; /* Set the desired width */
+    max-width: 1600px !important; /* Set the desired width */
     margin: 0 auto;              /* Center the content */
 }
 
