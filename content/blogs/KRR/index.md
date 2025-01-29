@@ -1,6 +1,6 @@
 ---
 title: "Vector Valued Kernel Ridge Regression"
-date: 2024-06-10
+date: 10-06-2024
 draft: false
 summary: "Vector valued Kernel ridge regression"
 categories: [Blog]
