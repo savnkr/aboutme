@@ -9,12 +9,12 @@
 .prose, .prose-xl {
     font-size: 16px;   /* Set a larger font size */
     line-height: 1.8;  /* Improve line spacing */
-    font-family: 'Intern', sans-serif; /* Apply your desired font */
+    font-family: 'Roboto', sans-serif; /* Apply your desired font */
 }
 
 /* Adjust spacing for headings */
 .prose h1, .prose h2, .prose h3 {
-    font-size: 1.5rem; /* Increase heading size */
+    font-size: 1.8rem; /* Increase heading size */
     margin-bottom: 1rem; /* Add space below headings */
 }
 
