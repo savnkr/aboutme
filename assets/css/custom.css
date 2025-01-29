@@ -1,26 +1,25 @@
 /* Apply global font settings */
-
-/* Change the width of the blog page */
-.max-w-screen-xl {
-    max-width: 1500px !important; /* Set the desired width */
-    margin: 0 auto;              /* Center the content */
+/* Expand content width */
+.prose, .prose-xl {
+    max-width: 100%; /* Remove content width restriction */
+    width: 100%;     /* Make it take the full container width */
 }
 
-/* Change the font globally */
-body, .prose, .prose-xl {
-    font-family: 'Roboto', sans-serif; /* Replace with your desired font */
-    font-size: 14px;                  /* Adjust font size */
-    line-height: 5.6;                 /* Adjust line height for better readability */
+/* Adjust font size and line height */
+.prose, .prose-xl {
+    font-size: 16px;   /* Set a larger font size */
+    line-height: 1.8;  /* Improve line spacing */
+    font-family: 'Roboto', sans-serif; /* Apply your desired font */
 }
 
-/* Further adjust blog-specific content */
+/* Adjust spacing for headings */
 .prose h1, .prose h2, .prose h3 {
-    font-family: 'Roboto', sans-serif; /* Use the same font for headings */
-    font-size: 1.8rem;                 /* Customize heading size */
-    margin-bottom: 1rem;               /* Add space below headings */
+    font-size: 1.8rem; /* Increase heading size */
+    margin-bottom: 1rem; /* Add space below headings */
 }
 
+/* Adjust spacing for paragraphs */
 .prose p {
-    font-size: 1rem;   /* Paragraph font size */
-    margin-bottom: 1.5rem; /* Spacing between paragraphs */
+    font-size: 1rem; /* Set font size for paragraphs */
+    margin-bottom: 1.5rem; /* Add spacing between paragraphs */
 }
