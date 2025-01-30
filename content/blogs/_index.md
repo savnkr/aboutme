@@ -14,6 +14,6 @@ view: card #article-grid
 
 banner:
   image: 'stacked-peaks.svg'
-  caption: 'Image credit: '
+  caption: 'Image credit: Unsplash'
 ---
 Welcome to my blog where I discuss various topics related to machine learning and AI

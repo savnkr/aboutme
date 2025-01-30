@@ -7,7 +7,7 @@
 appearance:
   mode: system
   color: emerald
-  font: Inter #Roboto #Mr Robot
+  font: Roboto #Mr Robot
   font_size: xs
   fevicon: /favicon.png
   container_width: 1200px

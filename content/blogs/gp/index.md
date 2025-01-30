@@ -2,7 +2,7 @@
 layout: post
 title: "📈Understanding Gaussian Processes"
 summary: "A comprehensive review of Gaussian Processes with detailed mathematical insights."
-date: 2024-06-07
+date: 2024-06-07T00:00:00Z
 categories: [Blog]
 tags: [machine learning, gaussian processes]
 image:
