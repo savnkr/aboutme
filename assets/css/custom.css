@@ -20,7 +20,7 @@
 
 /* Adjust spacing for paragraphs */
 .prose p {
-    font-size: 1.4rem; /* Set font size for paragraphs */
+    font-size: 1.2rem; /* Set font size for paragraphs */
     margin-bottom: 1.5rem; /* Add spacing between paragraphs */
 }
 
