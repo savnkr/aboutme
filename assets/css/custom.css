@@ -23,3 +23,13 @@
     font-size: 1rem; /* Set font size for paragraphs */
     margin-bottom: 1.5rem; /* Add spacing between paragraphs */
 }
+
+/* Override hb-sidebar-container width */
+@media (min-width: 1024px) {
+    .hb-sidebar-container {
+        width: 10rem !important; /* Set your desired width */
+        top: 4rem; /* Retain existing value if necessary */
+        flex-shrink: 0; /* Ensure it doesn't shrink */
+        align-self: flex-start; /* Retain original alignment */
+    }
+}
