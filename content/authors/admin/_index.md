@@ -154,10 +154,10 @@ languages:
 
 ## About Me
 
-<!-- Hi! I am Sawan Kumar, a PhD student at IIT Delhi. -->
-{{< typeit >}}
 Hi! I am Sawan Kumar, a PhD student at IIT Delhi.
-{{< /typeit >}}
+<!-- {{< typeit >}}
+Hi! I am Sawan Kumar, a PhD student at IIT Delhi.
+{{< /typeit >}} -->
 
 
 My research focuses on scalable Bayesian methods, uncertainty quantification, physics-aware deep learning, Gaussian Processes, prior modeling, and computational mechanics. Previously, I was an intern at the Foundation for Smart Manufacturing (FSM) at IIT Delhi, working on robotic automation and welding systems. Before that, I applied machine learning and AI techniques to enhance the design and performance of electric vehicles as a team lead for Team Hertz Electric at DTU. I completed my BTech in Mechanical Engineering at Delhi Technological University.
