@@ -33,3 +33,10 @@
         align-self: flex-start; /* Retain original alignment */
     }
 }
+
+#dynamic-text {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
