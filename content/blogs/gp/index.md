@@ -13,6 +13,8 @@ math: true
 feedback: true
 ---
 
+<!-- blog-content -->
+
 Gaussian Processes (GPs) are powerful tools in machine learning for modeling and inference. They provide a probabilistic approach to learning in kernel machines, offering flexibility and robustness in various applications.
 
 ## What are Gaussian Processes?
@@ -113,3 +115,5 @@ Gaussian Processes are a powerful tool for tasks requiring uncertainty quantific
 5. Snoek, J., Larochelle, H., & Adams, R. P. (2012). Practical Bayesian Optimization of Machine Learning Algorithms. *Advances in Neural Information Processing Systems*.
 
 For a more detailed understanding of Gaussian Processes, consider the references above.
+
+<!-- </div> -->

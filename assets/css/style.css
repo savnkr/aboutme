@@ -1,0 +1,5 @@
+/* Change the font and font size for the blog content */
+.blog-content {
+    font-family: 'Arial', sans-serif; /* Change to your desired font */
+    font-size: 16px; /* Change to your desired font size */
+}
