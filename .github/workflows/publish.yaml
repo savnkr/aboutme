@@ -23,7 +23,7 @@ concurrency:
 jobs:
   # Build website
   build:
-    # if: github.repository_owner != 'HugoBlox'
+    if: github.repository_owner != 'HugoBlox'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -54,13 +54,13 @@ jobs:
     - name: Generate Pagefind search index
       run: npx pagefind --site "public"
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2 #v2 
+      uses: actions/upload-pages-artifact@v3 #v2 
       with:
         path: ./public
 
   # Deploy website to GitHub Pages hosting
   deploy:
-    # if: github.repository_owner != 'HugoBlox'
+    if: github.repository_owner != 'HugoBlox'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
