@@ -31,7 +31,9 @@ sections:
     content:
       # Choose a user profile to display (a folder name within `content/authors/`)
       username: admin
-      text: ""
+      text: |-
+        <div id="typing-text" data-text="Hi! I am Sawan Kumar, a PhD student at IIT Delhi."></div>
+        <script src="/assets/js/typing-effect.js"></script>
       # Show a call-to-action button under your biography? (optional)
       button:
         text: Download CV
