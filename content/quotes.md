@@ -1,6 +1,6 @@
 ---
 title: "Quotes"
-date: 26-01-2025
+date: "2025-01-26"
 description: "A collection of my favorite quotes."
 type: page
 design:
