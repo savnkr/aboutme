@@ -153,29 +153,7 @@ languages:
 ---
 
 ## About Me
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Add Typed.js from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-  </head>
-  <body>
-    <!-- Container where the text will appear -->
-    <div id="typed"></div>
 
-    <script>
-      var typed = new Typed('#typed', {
-        strings: [
-          "Hi! I am Sawan Kumar, a PhD student at IIT Delhi"
-        ],
-        typeSpeed: 50,
-        backSpeed: 25,
-        loop: false
-      });
-    </script>
-  </body>
-</html> -->
 "Hi! I am Sawan Kumar, a PhD student at IIT Delhi"
 My research focuses on scalable Bayesian methods, uncertainty quantification, physics-aware deep learning, Gaussian Processes, prior modeling, and computational mechanics. Previously, I was an intern at the Foundation for Smart Manufacturing (FSM) at IIT Delhi, working on robotic automation and welding systems. Before that, I applied machine learning and AI techniques to enhance the design and performance of electric vehicles as a team lead for Team Hertz Electric at DTU. I completed my BTech in Mechanical Engineering at Delhi Technological University.
 
