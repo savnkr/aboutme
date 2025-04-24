@@ -15,8 +15,6 @@ status:
 
 # Is this the primary user of the site?
 superuser: true
-# avatar: ''  // added to remove the profile picture
-
 # Highlight the author in author lists? (true/false)
 highlight_name: true
 
@@ -160,7 +158,7 @@ Hi! I'm Sawan Kumar, a PhD student at IIT Delhi.
 
 My research spans scalable Bayesian methods, uncertainty quantification, physics-informed deep learning, Gaussian Processes, and computational mechanics. I am fortunate to be advised by [Prof. Souvik Chakraborty](https://www.csccm.in/our-team) and [Prof. Rajdip Nayek](https://sites.google.com/view/rajdip-nayek/team?authuser=0).
 
- Previously, I interned at the Foundation for Smart Manufacturing (FSM) at IIT Delhi, where I worked on robotic automation and AI for robotics. Before that, I applied machine learning techniques to enhance the design and performance of electric vehicles as a team lead for Team Hertz Electric at DTU. 
+ Previously, I interned at the Foundation for Smart Manufacturing (FSM) at IIT Delhi, where I worked on robotic automation and AI for robotics. Before that, I applied machine learning and AI techniques to enhance the design and performance of electric vehicles as a team lead for Team Hertz Electric at DTU. I completed my BTech in Mechanical Engineering at Delhi Technological University.
 
 <!-- Hi! I am Sawan Kumar, a PhD student at IIT Delhi, co-advised by [Prof. Souvik Chakraborty](https://www.csccm.in/our-team) and [Prof. Rajdip Nayek](https://sites.google.com/view/rajdip-nayek/team?authuser=0)
 
