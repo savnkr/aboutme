@@ -15,7 +15,7 @@ status:
 
 # Is this the primary user of the site?
 superuser: true
-avatar: ''  // added to remove the profile picture
+# avatar: ''  // added to remove the profile picture
 
 # Highlight the author in author lists? (true/false)
 highlight_name: true
