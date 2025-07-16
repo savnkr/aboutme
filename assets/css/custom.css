@@ -39,33 +39,4 @@
     font-weight: bold;
     font-size: 1.5rem;
   }
-
-/* Custom styling for profile image - square with rounded corners */
-.avatar {
-  border-radius: 15px !important;
-  width: 200px !important;
-  height: 200px !important;
-  object-fit: cover !important;
-}
-
-.avatar img {
-  border-radius: 15px !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-}
-
-/* Additional styling for different avatar sizes */
-.avatar-sm {
-  border-radius: 8px !important;
-}
-
-.avatar-lg {
-  border-radius: 20px !important;
-}
-
-/* Ensure the image container is also square */
-.resume-biography-3 .avatar,
-.biography .avatar {
-  border-radius: 15px !important;
-}
+  
