@@ -1,25 +1,15 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const aboutMeElement = document.querySelector('.about-me-typing');
-    if (!aboutMeElement) return;
-
-    const text = aboutMeElement.textContent;
-    aboutMeElement.textContent = '';
-    aboutMeElement.style.visibility = 'visible';
-
-    let index = 0;
-    const typingSpeed = 50; // milliseconds per character
-
-    function typeWriter() {
-        if (index < text.length) {
-            aboutMeElement.textContent += text.charAt(index);
-            index++;
-            setTimeout(typeWriter, typingSpeed);
-        } else {
-            // Remove cursor after typing is complete
-            aboutMeElement.classList.add('typing-complete');
-        }
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('typing-text');
+  if (!el) return;
+  const text = el.getAttribute('data-text');
+  let index = 0;
+  el.innerHTML = '';
+  function type() {
+    if (index < text.length) {
+      el.innerHTML += text.charAt(index);
+      index++;
+      setTimeout(type, 100); // adjust typing speed (in ms)
     }
-
-    // Start typing effect with a small delay
-    setTimeout(typeWriter, 500);
+  }
+  type();
 });
