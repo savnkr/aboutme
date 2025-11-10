@@ -10,6 +10,9 @@ main:
   - name: Blogs
     url: blogs/
     weight: 11
+  - name: Life
+    url: life/
+    weight: 12
   # - name: Publications
   #   url: publication/
   #   weight: 12
