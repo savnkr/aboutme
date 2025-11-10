@@ -20,18 +20,18 @@ Here I share my sketches and visual creations. Each piece tells a story, capture
 
 <!-- Uncomment and edit these lines after uploading your sketches -->
 <!-- 
-![Sketch 1](/uploads/life/sketches/sketch1.jpg "Description of sketch 1")
+<!-- ![Sketch 1](/uploads/life/sketches/sk_art_1.jpg "Description of sketch 1") -->
 
-![Sketch 2](/uploads/life/sketches/sketch2.jpg "Description of sketch 2")
+![Sketch 2](/uploads/life/sketches/sk_art_2.jpg "")
 
-![Sketch 3](/uploads/life/sketches/sketch3.jpg "Description of sketch 3")
+![Sketch 3](/uploads/life/sketches/sk_art_3.jpg "")
 -->
 
 <!-- You can also add sketches in a grid using HTML/CSS -->
 
 <div class="sketch-gallery">
   <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_1.JPG" alt="Sketch 1">
+    <img src="/uploads/life/sketches/sk_art_1.jpg" alt="Sketch 1">
   </div>
   <div class="sketch-item">
     <img src="/uploads/life/sketches/sk_art_2.jpg" alt="Sketch 2">
