@@ -14,9 +14,9 @@ Here I share my sketches and visual creations. Each piece tells a story, capture
 
 ---
 
-### How to Add Your Sketches
+<!-- ### How to Add Your Sketches
 
-**Upload your sketches** to `/static/uploads/life/sketches/` and then add them here:
+**Upload your sketches** to `/static/uploads/life/sketches/` and then add them here: -->
 
 <!-- Uncomment and edit these lines after uploading your sketches -->
 <!-- 
