@@ -30,15 +30,7 @@ There's something magical about the blank page—infinite possibilities waiting 
 
 ---
 
-### Short Pieces
-
-**Untitled**
-
-*Words flow like water,  
-Some gentle, some wild,  
-Each carrying meaning,  
-From the depths of the mind.*
 
 ---
 
-*Add your own writings here. Each piece can be a new section, or you can create separate files for longer works.*
+
