@@ -12,19 +12,20 @@ Here I share my sketches and visual creations. Each piece tells a story, capture
 ---
 
 <div class="sketch-gallery">
+  <!-- In Hugo, files placed under /static are served from the site root. So /static/uploads/... becomes /uploads/... -->
   <div class="sketch-item">
-    <a href="/static//uploads/life/sketches/sk_art_1.jpg" target="_blank">
-      <img src="/static/uploads/life/sketches/sk_art_1.jpg" alt="Sketch 1" loading="lazy">
+    <a href="/uploads/life/sketches/sk_art_1.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_1.jpg" alt="Sketch 1" loading="lazy">
     </a>
   </div>
   <div class="sketch-item">
-    <a href="/static/uploads/life/sketches/sk_art_2.jpg" target="_blank">
-      <img src="/static//uploads/life/sketches/sk_art_2.jpg" alt="Sketch 2" loading="lazy">
+    <a href="/uploads/life/sketches/sk_art_2.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_2.jpg" alt="Sketch 2" loading="lazy">
     </a>
   </div>
   <div class="sketch-item">
-    <a href="/static/uploads/life/sketches/sk_art_3.jpg" target="_blank">
-      <img src="/static/uploads/life/sketches/sk_art_3.jpg" alt="Sketch 3" loading="lazy">
+    <a href="/uploads/life/sketches/sk_art_3.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_3.jpg" alt="Sketch 3" loading="lazy">
     </a>
   </div>
   <div class="sketch-item">
