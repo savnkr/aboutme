@@ -14,42 +14,38 @@ Here I share my sketches and visual creations. Each piece tells a story, capture
 
 ---
 
-<!-- ### How to Add Your Sketches
-
-**Upload your sketches** to `/static/uploads/life/sketches/` and then add them here: -->
-
-<!-- Uncomment and edit these lines after uploading your sketches -->
-<!-- 
-<!-- ![Sketch 1](/uploads/life/sketches/sk_art_1.jpg "Description of sketch 1") -->
-
-![Sketch 2](/uploads/life/sketches/sk_art_2.jpg "")
-
-![Sketch 3](/uploads/life/sketches/sk_art_3.jpg "")
--->
-
-<!-- You can also add sketches in a grid using HTML/CSS -->
-
 <div class="sketch-gallery">
   <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_1.jpg" alt="Sketch 1">
+    <a href="/uploads/life/sketches/sk_art_1.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_1.jpg" alt="Sketch 1">
+    </a>
   </div>
   <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_2.jpg" alt="Sketch 2">
+    <a href="/uploads/life/sketches/sk_art_2.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_2.jpg" alt="Sketch 2">
+    </a>
   </div>
   <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_3.jpg" alt="Sketch 3">
+    <a href="/uploads/life/sketches/sk_art_3.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_3.jpg" alt="Sketch 3">
+    </a>
   </div>
-    <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_4.jpg" alt="Sketch 3">
+  <div class="sketch-item">
+    <a href="/uploads/life/sketches/sk_art_4.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_4.jpg" alt="Sketch 4">
+    </a>
   </div>
-    <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_5.jpg" alt="Sketch 3">
+  <div class="sketch-item">
+    <a href="/uploads/life/sketches/sk_art_5.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_5.jpg" alt="Sketch 5">
+    </a>
   </div>
-    <div class="sketch-item">
-    <img src="/uploads/life/sketches/sk_art_6.jpg" alt="Sketch 3">
+  <div class="sketch-item">
+    <a href="/uploads/life/sketches/sk_art_6.jpg" target="_blank">
+      <img src="/uploads/life/sketches/sk_art_6.jpg" alt="Sketch 6">
+    </a>
   </div>
 </div>
-
 
 ---
 
