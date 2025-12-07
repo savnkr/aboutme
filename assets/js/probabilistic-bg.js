@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         bioSection = document.querySelector('section.home-section');
     }
 
+    // Final fallback: Body
     if (!bioSection) {
         console.log("Probabilistic BG: Could not find bio section. Attaching to body as fallback.");
         bioSection = document.body;
@@ -44,11 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ensure the parent is positioned relatively so absolute positioning works
     const style = window.getComputedStyle(bioSection);
-    if (style.position === 'static') {
+    if (style.position === 'static' && bioSection !== document.body) {
         bioSection.style.position = 'relative';
     }
 
     // Insert canvas
+    if (bioSection === document.body) {
+        canvas.style.position = 'fixed';
+        canvas.style.zIndex = '-1'; // Behind everything if on body
+    }
+    
     bioSection.appendChild(canvas); // Append instead of insertBefore to be on top of background
 
     const ctx = canvas.getContext('2d');
@@ -93,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             // Use a color that contrasts well with the dark green background
             // The screenshot shows a dark green. White or light cyan works well.
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)'; 
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)'; 
             ctx.fill();
         }
     }

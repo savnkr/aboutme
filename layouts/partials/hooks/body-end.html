@@ -1,4 +1,8 @@
+<script>console.log("Hook body-end loaded");</script>
 {{ $js := resources.Get "js/probabilistic-bg.js" }}
 {{ if $js }}
   <script src="{{ $js.RelPermalink }}"></script>
+{{ else }}
+  <script>console.error("Resource js/probabilistic-bg.js not found via resources.Get");</script>
+  <script src="/js/probabilistic-bg.js"></script>
 {{ end }}
