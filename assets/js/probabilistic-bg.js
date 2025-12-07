@@ -24,9 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (!bioSection) {
-        console.log("Probabilistic BG: Could not find bio section.");
-        return;
+        console.log("Probabilistic BG: Could not find bio section. Attaching to body as fallback.");
+        bioSection = document.body;
     }
+
+    console.log("Probabilistic BG: Attaching to", bioSection);
 
     // Create canvas
     const canvas = document.createElement('canvas');
@@ -36,17 +38,18 @@ document.addEventListener('DOMContentLoaded', function() {
     canvas.style.left = '0';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
-    canvas.style.zIndex = '0'; // Behind content
+    canvas.style.zIndex = '1'; // Try positive z-index
     canvas.style.pointerEvents = 'none'; // Let clicks pass through
-    canvas.style.opacity = '0.6'; // Subtle effect
+    canvas.style.opacity = '0.8'; // More visible
 
     // Ensure the parent is positioned relatively so absolute positioning works
-    if (getComputedStyle(bioSection).position === 'static') {
+    const style = window.getComputedStyle(bioSection);
+    if (style.position === 'static') {
         bioSection.style.position = 'relative';
     }
 
-    // Insert canvas as the first child
-    bioSection.insertBefore(canvas, bioSection.firstChild);
+    // Insert canvas
+    bioSection.appendChild(canvas); // Append instead of insertBefore to be on top of background
 
     const ctx = canvas.getContext('2d');
     let width, height;
