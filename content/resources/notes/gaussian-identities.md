@@ -60,4 +60,36 @@ $$
 \boldsymbol{\Sigma}_{x|y} = \boldsymbol{\Sigma}_{xx} - \boldsymbol{\Sigma}_{xy} \boldsymbol{\Sigma}_{yy}^{-1} \boldsymbol{\Sigma}_{yx}
 $$
 
+## 4. Matrix Variate Gaussian Distribution
 These identities are crucial for understanding Gaussian Processes, Kalman Filters, and Variational Inference.
+
+>[!Definition] 
+>The random matrix $X(n \times p)$ is said to have a matrix variate normal distribution wit mean $M(n\times p)$ and covariance $\Omega\otimes\Sigma$ where $\Sigma (p\times p) \geq 0$ and $\Omega(n\times n)\geq 0$, if  $\text{vec}(X) \sim \mathcal{N}_{pn}(\text{vec}(M),\Omega \otimes \Sigma)$. We shall use the notation  $X \sim\mathcal{N}_{n,p}(M,\Omega \otimes \Sigma).$ 
+
+
+The probability density function (pdf) of $X$ is given by :
+$$
+f(X) = (2\pi)^{-np/2} \det(\Omega)^{-p/2} \exp\left\{ -\frac{1}{2} tr[\Omega^{-1}(X-M)\Sigma^{-1}(X-M)^{\top}]\right\},\quad X \in \mathbb{R}^{n\times p}, \quad M \in \mathbb{R}^{n\times p}
+$$
+where $\otimes$ is the Kronecker product and $\textit{vec}$ is the vectorizing operation for matrix notation. 
+
+If $X \sim \mathcal{N}_{n,p}(X;M,\Omega \otimes \Sigma)$, then the characteristic function of $X$ is 
+$$
+\begin{aligned}
+\phi_{X}(Z) &= \mathbb{E}[\exp(tr(iZ^TX))] \\
+&=\exp\left[ tr\left( iZ^T M - \frac{1}{2}Z^T\Omega Z\Sigma \right) \right], Z = \mathbb{R}^{n\times p}
+\end{aligned}
+
+$$
+and $\mathbb{E}=M$, $Cov(ve c (X)) = \Omega \otimes \Sigma$.  
+
+>[!Note]
+>The notation $A\gt 0$ mean $A$ is symmetric positive definite. 
+
+
+
+
+
+# References
+1. Multivariate notes
+2. Multivariate statistics
