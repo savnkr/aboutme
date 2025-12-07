@@ -1,0 +1,4 @@
+{{ $js := resources.Get "js/probabilistic-bg.js" }}
+{{ if $js }}
+  <script src="{{ $js.RelPermalink }}"></script>
+{{ end }}
