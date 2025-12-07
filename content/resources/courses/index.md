@@ -1,6 +1,13 @@
+---
+title: "AI & ML Course Hub"
+date: 2025-12-07
+summary: "My curated list of AI & ML learning resources."
+tags: ['learning', 'ai', 'ml']
+---
+
 # 🚀 My AI & ML Learning Journey
 
-Hi, I'm passionate about Artificial Intelligence and Machine Learning! This **AI & Machine Learning Course Hub** is a personal collection of top-tier courses that have shaped my journey over the past few years. Carefully curated from leading universities, brilliant researchers, and open-access platforms, these resources reflect my ongoing learning. Whether you're a beginner or a seasoned learner, I hope this hub inspires and supports your own AI/ML adventure!
+Whether you're a beginner or an advanced learner, I hope this inspires and supports your own AI/ML adventure!
 
 
 ---
@@ -139,13 +146,6 @@ Tools and practices for research and software development in AI.
 | **Research Software Engineering with Python** | Turing Institute’s course on software engineering for research. | [Link](https://alan-turing-institute.github.io/rse-course/html/index.html) |
 | **RSE GitHub Repo** | Companion materials for the RSE course. | [Link](https://github.com/alan-turing-institute/rse-course) |
 
----
-
-## 🧭 How to Use
-
-1. **Clone or Fork**: Get started by cloning or forking this repository.
-2. **Explore Courses**: Browse the categorized courses and click links to access materials.
-3. **Contribute**: Add new courses or improve existing entries via pull requests.
 ---
 
 ## 📌 Acknowledgments
