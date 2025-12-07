@@ -1,10 +1,8 @@
 ---
 title: "Quotes"
 date: "2025-01-26"
-description: "A collection of my favorite quotes."
-type: page
-design:
-  spacing: '5rem'
+summary: "A collection of my favorite quotes."
+tags: ['quotes', 'inspiration']
 ---
 
 These are my collection of favorite quotes! Here, you'll find a variety of inspirational, motivational, and humorous quotes that resonate with me.
@@ -39,5 +37,3 @@ These are my collection of favorite quotes! Here, you'll find a variety of inspi
 > Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment. — Buddh
 
 ---
-
-

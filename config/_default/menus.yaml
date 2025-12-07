@@ -25,12 +25,9 @@ main:
   # - name: Projects
   #   url: projects/
   #   weight: 30
-  - name: Quotes
-    url: quotes/
-    weight: 30
-  - name: Life
-    url: life/
-    weight: 12
+  - name: Resources
+    url: resources/
+    weight: 13
   # - name: Teaching
   #   url: teaching/
   #   weight: 40
