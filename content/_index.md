@@ -154,7 +154,7 @@ sections:
       subtitle: ''
       text: |-
         <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0;">
-          <script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5walv2ardlp&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33" async="async"></script>
+          <iframe src="//rf.revolvermaps.com/w/8/a/a2.php?i=5walv2ardlp&m=0&c=ff0000&cr1=ffffff&f=arial&l=33&z=11&cw=ffffff&cb=000000" style="border:0; width:220px; height:220px;" frameborder="0" allowtransparency="true"></iframe>
         </div>
     design:
       columns: '1'
