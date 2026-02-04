@@ -146,4 +146,16 @@ sections:
   #       # Card background color (CSS class)
   #       css_class: "bg-primary-700"
   #       css_style: ""
+
+  - block: markdown
+    id: visitors
+    content:
+      title: '🌍 Visitors'
+      subtitle: ''
+      text: |-
+        <div style="display: flex; justify-content: center; align-items: center; padding: 20px 0;">
+          <script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5walv2ardlp&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33" async="async"></script>
+        </div>
+    design:
+      columns: '1'
 ---
