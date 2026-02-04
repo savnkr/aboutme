@@ -5,7 +5,7 @@ authors:
 - Rajdip Nayek
 - Souvik Chakraborty
 date: "2024-04-29T00:00:00Z"
-doi: "10.48550/arXiv.2404.15618"
+doi: ""
 
 # Schedule page publish date (NOT publication's date).
 publishDate: "2024-04-29T00:00:00Z"
@@ -13,11 +13,11 @@ publishDate: "2024-04-29T00:00:00Z"
 # Publication type.
 # Accepts a single type but formatted as a YAML list (for Hugo requirements).
 # Enter a publication type from the CSL standard.
-publication_types: ["preprint"]
+publication_types: ["article-journal"]
 
 # Publication name and optional abbreviated publication name.
-publication: "arXiv"
-publication_short: "arXiv"
+publication: "*Computer Methods in Applied Mechanics and Engineering*"
+publication_short: "CMAME"
 
 abstract: The study of neural operators has paved the way for the development of efficient approaches for solving partial differential equations (PDEs) compared with traditional methods. However, most of the existing neural operators lack the capability to provide uncertainty measures for their predictions, a crucial aspect, especially in data-driven scenarios with limited available data. In this work, we propose a novel Neural Operator-induced Gaussian Process (NOGaP), which exploits the probabilistic characteristics of Gaussian Processes (GPs) while leveraging the learning prowess of operator learning. The proposed framework leads to improved prediction accuracy and offers a quantifiable measure of uncertainty. The proposed framework is extensively evaluated through experiments on various PDE examples, including Burger’s equation, Darcy flow, non-homogeneous Poisson, and wave-advection equations. Furthermore, a comparative study with state-of-the-art operator learning algorithms is presented to highlight the advantages of NOGaP. The results demonstrate superior accuracy and expected uncertainty characteristics, suggesting the promising potential of the proposed framework.
 
@@ -33,6 +33,8 @@ tags:
 featured: true
 
 links:
+- name: "CMAME"
+  url: ""
 - name: arXiv
   url: https://arxiv.org/abs/2404.15618
 url_pdf: https://arxiv.org/pdf/2404.15618
