@@ -30,7 +30,7 @@ tags:
 - Non-Stationary Kernels
 - Convergence Analysis
 
-featured: true
+featured: false
 
 links:
 - name: arXiv

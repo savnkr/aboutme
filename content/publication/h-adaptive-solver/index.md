@@ -31,7 +31,7 @@ tags:
 - Numerical Methods
 - Time-dependent Systems
 
-featured: true
+featured: false
 
 links:
 - name: "CMAME"

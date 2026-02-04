@@ -31,7 +31,7 @@ tags:
 - Physical Systems
 - Scalability
 
-featured: true
+featured: false
 
 links:
 - name: arXiv
