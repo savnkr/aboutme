@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { asset, href } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft && !data.teaser);
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+const src = (path?: string) => (path && path.startsWith('/') ? asset(path) : path);
+const links = [
+  ['Code', d.repo],
+  ['Live demo', d.demo],
+  ['Paper', d.paper],
+].filter(([, url]) => url);
+---
+
+<Base title={`${d.title} · Sawan Kumar`} description={d.summary}>
+  <article class="page prose project-page">
+    <p class="meta"><a href={href('/projects/')}>Projects</a> · {d.status} · {d.year}</p>
+    <h1>{d.title}</h1>
+    <p class="deck">{d.summary}</p>
+    {links.length > 0 && (
+      <p class="actions">
+        {links.map(([label, url], i) => <a class:list={['btn', { primary: i === 0 }]} href={url}>{label} ↗</a>)}
+      </p>
+    )}
+    {d.video ? (
+      <figure class="figure media"><video src={src(d.video)} autoplay muted loop playsinline controls></video></figure>
+    ) : d.cover ? (
+      <figure class="figure media"><img src={src(d.cover)} alt={`${d.title}: demo`} /></figure>
+    ) : d.figure ? (
+      <figure class="figure">
+        <canvas data-figure={d.figure} aria-hidden="true"></canvas>
+        <figcaption class="caption">An explanation, drawn. Not a measured result.</figcaption>
+      </figure>
+    ) : null}
+    {(d.impact || d.role || d.stack.length > 0) && (
+      <dl class="facts">
+        {d.impact && <div><dt>Why it matters</dt><dd>{d.impact}</dd></div>}
+        {d.role && <div><dt>My role</dt><dd>{d.role}</dd></div>}
+        {d.stack.length > 0 && <div><dt>Built with</dt><dd>{d.stack.join(' · ')}</dd></div>}
+      </dl>
+    )}
+    <p class="tags">{d.tags.map((tag) => <span class="tag">{tag}</span>)}</p>
+    <Content />
+  </article>
+</Base>

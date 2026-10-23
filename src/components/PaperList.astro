@@ -1,0 +1,48 @@
+---
+import { asset } from '../lib/site';
+
+const { papers, bib = false } = Astro.props;
+const src = (path: string) => (path.startsWith('/') ? asset(path) : path);
+---
+
+<ol class="papers">
+  {papers.map((paper) => (
+    <li class:list={['paper', { 'has-thumb': paper.data.thumbnail }]} data-tags={paper.data.theme}>
+      {paper.data.thumbnail && (
+        paper.data.thumbnail.endsWith('.mp4')
+          ? <video class="thumb" src={src(paper.data.thumbnail)} autoplay muted loop playsinline></video>
+          : <img class="thumb" src={src(paper.data.thumbnail)} alt="" loading="lazy" />
+      )}
+      <div class="paper-body">
+      <h3>
+        {paper.data.paper ? <a href={paper.data.paper}>{paper.data.title}</a> : paper.data.title}
+      </h3>
+      <p class="authors">
+        {paper.data.authors.map((name, i) => (
+          <>
+            {i > 0 && ', '}
+            {name === 'Sawan Kumar' ? <strong>{name}</strong> : name}
+            {paper.data.equal.includes(name) && <sup title="Equal contribution">*</sup>}
+          </>
+        ))}
+      </p>
+      <p class="venue-line">{paper.data.venue} {paper.data.year}{paper.data.equal.length > 0 && <span class="eq"> · * equal contribution, joint first author</span>}</p>
+      {paper.data.tldr && <p class="tldr"><strong>TL;DR</strong> {paper.data.tldr}</p>}
+      <p class="links">
+        {paper.data.paper && <a href={paper.data.paper}>arXiv</a>}
+        {paper.data.pdf && <a href={paper.data.pdf}>PDF</a>}
+        {paper.data.poster && <a href={asset(paper.data.poster)}>Poster</a>}
+        {paper.data.code && <a href={paper.data.code}>Code</a>}
+        {paper.data.video && <a href={paper.data.video}>Video</a>}
+        {paper.data.project && <a href={paper.data.project}>Project page</a>}
+      </p>
+      {bib && paper.data.bibtex && (
+        <details class="bib">
+          <summary>BibTeX</summary>
+          <pre>{paper.data.bibtex}</pre>
+        </details>
+      )}
+      </div>
+    </li>
+  ))}
+</ol>

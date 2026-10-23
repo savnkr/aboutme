@@ -1,0 +1,6 @@
+---
+// Inline mention drawn like a highlighter stroke over the words.
+const { href } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+<Tag class="hl" href={href}><slot /></Tag>

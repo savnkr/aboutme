@@ -1,0 +1,199 @@
+---
+import { getCollection } from 'astro:content';
+import katex from 'katex';
+import Base from '../layouts/Base.astro';
+import PaperList from '../components/PaperList.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { href, links } from '../lib/site';
+import { studying } from '../lib/studying';
+
+const papers = (await getCollection('papers', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const tex = (s: string, display = true) => katex.renderToString(s, { displayMode: display, throwOnError: false });
+
+// The research arc, in order. Papers are referenced by their file name in src/content/papers.
+const arc = [
+  {
+    n: '01',
+    state: 'Published',
+    title: 'Scalable kernels with guarantees',
+    text: 'Gaussian processes are the cleanest way to say “I’m not sure”, but they scale poorly and assume the world looks the same everywhere. Random wavelet features put non-stationarity in a random basis: one linear solve, a positive-definite kernel, and uniform convergence.',
+    papers: ['Scalable Random Wavelet Features (ICLR)'],
+  },
+  {
+    n: '02',
+    state: 'Published',
+    title: 'Operators that report their own error',
+    text: 'Neural operators learn whole families of solutions, but rarely say when they are wrong. I built Gaussian-process operators that scale to large physical systems and return calibrated uncertainty alongside every prediction.',
+    papers: ['Scalable GP Operator (JCP)', 'Towards GP for operator learning', 'NOGaP', 'h-adaptive probabilistic solver'],
+  },
+  {
+    n: '03',
+    state: 'Now',
+    title: 'One-step generative models',
+    text: 'Drifting models, kernel drifting and Wasserstein gradient flows train a generator that needs a single step at inference: fast enough for real-time control. Their engine is a kernel, and their behaviour is spectral, which is exactly the toolkit I built in my PhD. I study what these generators are uncertain about, and whether that can be trusted.',
+    papers: [],
+  },
+  {
+    n: '04',
+    state: 'Next',
+    title: 'World models and robots that know when to stop',
+    text: 'Robot policies, VLAs and video world models act in an open world and fail quietly outside their data. Fast generators make real-time control possible; calibrated uncertainty makes it safe: knowing when to act, when to ask, and when to defer. This is where I want to spend the next years.',
+    papers: [],
+  },
+];
+---
+
+<Base title="Research · Sawan Kumar" description="Probabilistic machine learning: scalable Gaussian processes, uncertainty-aware operators, deep generative models, and where they lead.">
+  <article class="page research">
+    <p class="kicker mono">Research</p>
+    <h1>How can a model know what it doesn’t know, <span class="serif grad-text">and still scale?</span></h1>
+    <p class="deck">That question runs through everything I do: kernels, operators, generative models, and next, robots. Below is a small lab to play with, the arc of my work, and the mathematics I keep returning to.</p>
+  </article>
+
+  <section class="lab" data-lab>
+    <canvas data-figure="lab" aria-label="Interactive Gaussian process. Click to add data, drag a point to move it, choose a kernel above."></canvas>
+    <div class="lab-ui">
+      <div class="lab-controls">
+        <div class="seg" role="group" aria-label="Kernel">
+          <button type="button" data-kernel="rbf" class="on">RBF</button>
+          <button type="button" data-kernel="matern52">Matérn 5/2</button>
+          <button type="button" data-kernel="matern12">Matérn 1/2</button>
+          <button type="button" data-kernel="periodic">Periodic</button>
+          <button type="button" data-kernel="gibbs">Non-stationary</button>
+        </div>
+        <label class="slider">length-scale <input type="range" min="0.03" max="0.3" step="0.005" value="0.09" data-ell /></label>
+        <button type="button" class="ghost" data-clear>Clear data</button>
+        <button type="button" class="ghost" data-reset>Reset</button>
+      </div>
+      <p class="lab-hint mono">click: add an observation · drag a point: move it · lines: exact posterior samples</p>
+      <div class="insight" data-insight aria-live="polite"></div>
+    </div>
+    <template data-for="rbf"><strong>RBF.</strong> Infinitely smooth, and stationary: it assumes the function wiggles the same way everywhere. By Bochner’s theorem its spectrum is Gaussian, which is exactly what random Fourier features sample from. <em>Try dragging a point up or down.</em></template>
+    <template data-for="matern52"><strong>Matérn 5/2.</strong> Twice differentiable, the usual practical default. Matérn kernels are solutions of a stochastic PDE driven by the Laplacian, which is how they generalise to spheres and graphs (see below).</template>
+    <template data-for="matern12"><strong>Matérn 1/2.</strong> The Ornstein–Uhlenbeck process: continuous but nowhere differentiable, like Brownian motion pulled back to its mean. Same data, a completely different belief about the function.</template>
+    <template data-for="periodic"><strong>Periodic.</strong> A belief that the function repeats. Notice how the model extrapolates confidently far from data. Structure in the prior is information.</template>
+    <template data-for="gibbs"><strong>Non-stationary.</strong> The length-scale grows from left to right, so the function is rough on the left and smooth on the right. Real signals (terrain, weather, speech) are like this. My ICLR paper makes such kernels scale with random wavelet features.</template>
+    <template data-for="drag"><strong>Did you notice?</strong> The band did not move. A GP’s posterior variance depends only on <em>where</em> you observed, never on <em>what</em> you saw. Uncertainty you can plan with before collecting a single label, which is why GPs drive active learning and Bayesian optimisation.</template>
+    <template data-for="prior"><strong>The prior.</strong> No data, so the samples show what the kernel believes before seeing anything. Click to condition it, and watch the band collapse around each observation.</template>
+  </section>
+
+  <article class="page research">
+    <section class="section">
+      <SectionHead n={1} title="The arc of my work" />
+      <ol class="arc">
+        {arc.map((a) => (
+          <li class:list={['card-box', { future: a.state !== 'Published' }]} data-reveal>
+            <span class="n mono">{a.n}</span>
+            <div>
+              <p class="meta"><span class="badge">{a.state}</span></p>
+              <h3>{a.title}</h3>
+              <p>{a.text}</p>
+              {a.papers.length > 0 && <p class="refs mono">{a.papers.join(' · ')}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section" data-sphere>
+      <SectionHead n={2} title="One operator I keep coming back to" />
+      <div class="math">
+        <div class="math-text">
+          <p>The <strong>Laplacian</strong> quietly connects three of my favourite objects. (The long version, from heat and diffusion models to music: <a href="/aboutme/blog/one-operator-i-keep-coming-back-to/">One operator I keep coming back to</a>.)</p>
+          <h3>1 · Spherical harmonics</h3>
+          <p>On the sphere, the Laplace–Beltrami operator’s eigenfunctions are the spherical harmonics, the “Fourier basis” of the globe:</p>
+          <Fragment set:html={tex('\\Delta_{\\mathbb{S}^2}\\, Y_\\ell^m = -\\ell(\\ell+1)\\, Y_\\ell^m')} />
+          <h3>2 · Matérn GPs on any manifold</h3>
+          <p>A Matérn Gaussian process is the solution of a stochastic PDE in the Laplacian. Expand it in the eigenbasis and you get a kernel on spheres, meshes and graphs, which is how GPs model global weather:</p>
+          <Fragment set:html={tex('\\Big(\\tfrac{2\\nu}{\\kappa^2} - \\Delta\\Big)^{\\frac{\\nu}{2} + \\frac{d}{4}} f = \\mathcal{W}')} />
+          <Fragment set:html={tex('k(x,x\') \\propto \\sum_{\\ell} \\Big(\\tfrac{2\\nu}{\\kappa^2} + \\ell(\\ell+1)\\Big)^{-\\nu-\\frac{d}{2}} \\sum_{m} Y_\\ell^m(x)\\, Y_\\ell^m(x\')')} />
+          <h3>3 · The Mexican-hat wavelet</h3>
+          <p>The wavelet at the heart of my random wavelet features is, up to sign and scale, the Laplacian of a Gaussian: local in space <em>and</em> frequency.</p>
+          <Fragment set:html={tex('\\psi(x) \\;\\propto\\; -\\Delta\\, e^{-\\lVert x \\rVert^2/2} \\;=\\; \\big(d - \\lVert x \\rVert^2\\big)\\, e^{-\\lVert x \\rVert^2/2}')} />
+        </div>
+        <figure class="sphere">
+          <canvas data-figure="sphere" aria-label="A rotating sphere coloured by a spherical harmonic."></canvas>
+          <figcaption>
+            <span class="mono">Y<sub data-show-l>3</sub><sup data-show-m>2</sup> · eigenvalue −<span data-eig>12</span></span>
+            <label class="slider">ℓ <input type="range" min="0" max="8" step="1" value="3" data-l /></label>
+            <label class="slider">m <input type="range" min="-3" max="3" step="1" value="2" data-m /></label>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionHead n={3} title="What I’m studying beyond my papers" note="updated as I learn" />
+      <div class="study">
+        {studying.map((s) => (
+          <div class="card-box" data-reveal>
+            <p class="meta"><span class="badge">{s.area}</span></p>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <SectionHead n={4} title="Papers" note="* equal contribution" />
+      <div data-filter-root class="filters">
+        <button type="button" data-tag="all" class="on">All</button>
+        <button type="button" data-tag="functions">Kernels</button>
+        <button type="button" data-tag="systems">Operators & physical systems</button>
+      </div>
+      <PaperList papers={papers} bib />
+      <p class="meta">Full list and citations on <a href={links.scholar}>Google Scholar</a>. Projects in progress are on the <a href={href('/projects/')}>projects page</a>.</p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .kicker { font-size: 0.78rem; color: var(--a1); margin: 0 0 0.6rem; }
+  .research h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.08; max-width: 22ch; }
+  .research h1 .serif { font-style: italic; font-weight: 400; }
+  main > section.lab { width: 100%; max-width: none; position: relative; margin: 1rem 0 0; }
+  .lab canvas {
+    display: block;
+    width: 100%;
+    height: clamp(300px, 46vh, 460px);
+    cursor: crosshair;
+    touch-action: pan-y;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent), linear-gradient(transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent), linear-gradient(transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+  .lab-ui { width: min(var(--wrap), 100% - 2 * var(--gut)); margin: 0 auto; }
+  .lab-controls { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; }
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.25rem; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+  .seg button, .ghost { font: inherit; font-size: 0.84rem; padding: 0.3rem 0.7rem; border-radius: 9px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+  .seg button.on { background: var(--a1); color: #fff; }
+  .ghost { border: 1px solid var(--line); background: var(--surface); }
+  .slider { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.84rem; color: var(--muted); }
+  .slider input { accent-color: var(--a1); width: 120px; }
+  .lab-hint { font-size: 0.74rem; color: var(--faint); margin: 0.7rem 0 0; }
+  .insight { margin-top: 0.9rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--dot); background: var(--surface); border-radius: 0 12px 12px 0; max-width: 70ch; font-size: 0.97rem; min-height: 4.5rem; }
+  .arc { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+  .arc li { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.2rem 1.3rem; }
+  .arc .n { font-size: 1.4rem; color: var(--a1); }
+  .arc h3 { margin: 0.3rem 0 0.4rem; font-size: 1.12rem; }
+  .arc p { margin: 0; color: var(--muted); }
+  .arc .refs { margin-top: 0.6rem; font-size: 0.74rem; color: var(--a2); }
+  .arc li.future { border-style: dashed; box-shadow: none; }
+  .math { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 2rem; align-items: start; }
+  .math h3 { font-size: 1rem; margin: 1.4rem 0 0.3rem; color: var(--a1); }
+  .math p { margin: 0 0 0.4rem; color: var(--muted); }
+  .math :global(.katex-display) { margin: 0.6rem 0; overflow-x: auto; overflow-y: hidden; padding: 0.3rem 0; }
+  .sphere { position: sticky; top: 90px; margin: 0; text-align: center; }
+  .sphere canvas { display: block; width: 100%; aspect-ratio: 1; }
+  .sphere figcaption { display: grid; gap: 0.5rem; justify-items: center; font-size: 0.9rem; }
+  .study { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.9rem; }
+  .study > div { padding: 1.1rem 1.2rem; }
+  .study h3 { margin: 0.4rem 0 0.3rem; font-size: 1.02rem; }
+  .study p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+  @media (max-width: 860px) {
+    .math { grid-template-columns: 1fr; }
+    .sphere { position: static; max-width: 320px; margin: 0 auto; }
+  }
+</style>

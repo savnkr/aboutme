@@ -1,0 +1,150 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { asset, href, links, nav, site } from '../lib/site';
+import Icon from '../components/Icon.astro';
+
+const { title = site.title, description = site.description } = Astro.props;
+const path = Astro.url.pathname;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f5fb" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(asset('/media/portrait.jpg'), Astro.site)} />
+    <script is:inline>
+      (() => {
+        const apply = () => {
+          const root = document.documentElement;
+          root.classList.remove('no-js');
+          root.classList.add('js');
+          let saved = null;
+          try { saved = localStorage.getItem('theme'); } catch {}
+          if (saved) root.dataset.theme = saved;
+        };
+        apply();
+        document.addEventListener('astro:after-swap', apply);
+      })();
+    </script>
+    <ClientRouter />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Sawan Kumar',
+      jobTitle: 'PhD researcher, probabilistic machine learning',
+      knowsAbout: ['Probabilistic machine learning', 'Gaussian processes', 'Generative models', 'Uncertainty quantification', 'Robotics'],
+      affiliation: { '@type': 'CollegeOrUniversity', name: 'Indian Institute of Technology Delhi' },
+      email: site.email,
+      url: canonical.origin + href('/'),
+      sameAs: [links.scholar, links.github, links.linkedin, links.openreview, links.x],
+    })} />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="site-header" transition:persist="header">
+      <div class="wrap">
+        <a class="wordmark" href={href('/')}><span class="mono-mark">sk</span><span class="full">Sawan Kumar</span></a>
+        <nav class="nav" aria-label="Sections">
+          {nav.map((item) => {
+            const active = path === href(item.href) || (item.href !== '/' && path.startsWith(href(item.href)));
+            return <a href={href(item.href)} class:list={{ active }}>{item.label}</a>;
+          })}
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode" data-theme-toggle>
+          <Icon name="moon" class="moon" /><Icon name="sun" class="sun" />
+        </button>
+      </div>
+    </header>
+    <main id="content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>© {new Date().getFullYear()} Sawan Kumar · <span lang="hi">सावन</span> · designed and sketched by me</span>
+      <nav aria-label="Contact">
+        <a href={`mailto:${site.email}`}>Email</a>
+        <a href={links.scholar}>Scholar</a>
+        <a href={links.github}>GitHub</a>
+        <a href={links.linkedin}>LinkedIn</a>
+        <a href={links.x}>X</a>
+        <a href={href('/life/')}>Life</a>
+        <a href={href('/blog/rss.xml')}>RSS</a>
+      </nav>
+    </footer>
+    <script>
+      import { mountFlow, mountGenesis, mountGp, mountGpLab, mountLive, mountMeter, mountPrior, mountRobot, mountSphere, mountStory } from '../scripts/figures.js';
+      const mounts = { gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere };
+      function bindFigures() {
+        document.querySelectorAll('canvas[data-figure]').forEach((canvas) => {
+          if (canvas.dataset.mounted) return;
+          const mount = mounts[canvas.dataset.figure];
+          if (!mount) return;
+          canvas.dataset.mounted = '1';
+          mount(canvas);
+        });
+      }
+      function bindFilters() {
+        document.querySelectorAll('[data-filter-root]').forEach((root) => {
+          if (root.dataset.bound) return;
+          root.dataset.bound = '1';
+          const buttons = root.querySelectorAll('button[data-tag]');
+          const items = root.parentElement.querySelectorAll('[data-tags]');
+          const apply = (tag) => {
+            buttons.forEach((b) => b.classList.toggle('on', b.dataset.tag === tag));
+            items.forEach((item) => {
+              const tags = (item.getAttribute('data-tags') || '').split(' ');
+              item.hidden = tag !== 'all' && !tags.includes(tag);
+            });
+          };
+          buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.tag || 'all')));
+        });
+      }
+      function bindReveal() {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          });
+        }, { rootMargin: '0px 0px -12% 0px' });
+        document.querySelectorAll('[data-reveal]:not(.in)').forEach((el) => io.observe(el));
+      }
+      function bindTheme() {
+        const btn = document.querySelector('[data-theme-toggle]');
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          const root = document.documentElement;
+          const dark = root.dataset.theme
+            ? root.dataset.theme === 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches;
+          root.dataset.theme = dark ? 'light' : 'dark';
+          try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+          window.dispatchEvent(new Event('themechange'));
+        });
+      }
+      document.addEventListener('astro:page-load', () => {
+        bindTheme();
+        bindReveal();
+        const meter = document.querySelector('[data-meter]');
+        if (meter && !meter.dataset.mounted) {
+          meter.dataset.mounted = '1';
+          mountMeter(meter);
+        }
+        bindFilters();
+        bindFigures();
+      });
+    </script>
+  </body>
+</html>

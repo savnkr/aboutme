@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { resources } from '../lib/resources';
+const total = resources.reduce((n, g) => n + g.items.length, 0);
+---
+
+<Base title="Resources · Sawan Kumar" description="Courses, books and writing that shaped how I think about machine learning.">
+  <article class="page">
+    <h1>Resources</h1>
+    <p class="deck">{total} courses, books and essays that shaped how I think, collected in one place so you don’t have to hunt for them. All free, all made by people far more patient than any search engine.</p>
+    <nav class="toc" aria-label="Topics">
+      {resources.map((g) => <a href={`#${g.topic.toLowerCase().replace(/[^a-z]+/g, '-')}`}>{g.topic}</a>)}
+    </nav>
+    {resources.map((g) => (
+      <section class="res-group" id={g.topic.toLowerCase().replace(/[^a-z]+/g, '-')} data-reveal>
+        <h2>{g.topic}</h2>
+        <p class="meta">{g.blurb}</p>
+        <ul class="res-list">
+          {g.items.map((it) => (
+            <li>
+              <a href={it.url}>
+                <span class="t">{it.title}</span>
+                <span class="w">{it.who}</span>
+                <span class="go" aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+    <p class="meta">With gratitude to the universities, researchers and writers who make this freely available.</p>
+  </article>
+</Base>

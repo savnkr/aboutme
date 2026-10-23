@@ -1,0 +1,20 @@
+---
+// One post as a horizontal row: cover on the left, text on the right.
+// Drafts render as a non-clickable "in progress" row, so readers see what's coming.
+import { asset, href, minutes } from '../lib/site';
+const { post, section } = Astro.props;
+const fmt = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+const draft = post.data.draft;
+const Tag = draft ? 'div' : 'a';
+---
+<Tag class:list={['post-row', { draft }]} data-tags={post.data.tags.join(' ')} href={draft ? undefined : href(`/${section}/${post.id}/`)}>
+  <img class="thumb" src={asset(post.data.cover)} alt="" loading="lazy" />
+  <div class="body">
+    <p class="meta">
+      {draft ? <span class="badge">Essay in progress</span> : <>Updated {fmt(post.data.updated)} · {minutes(post.body)} min read</>}
+    </p>
+    <h3>{post.data.title}</h3>
+    <p>{post.data.description}</p>
+    <p class="tags">{post.data.tags.map((tag) => <span>{tag}</span>)}</p>
+  </div>
+</Tag>

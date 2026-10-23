@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { asset, href, links, site } from '../lib/site';
+
+const papers = (await getCollection('papers', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const author = (p) =>
+  p.data.authors.map((n) => (n === 'Sawan Kumar' ? `<strong>${n}</strong>` : n) + (p.data.equal.includes(n) ? '*' : '')).join(', ');
+
+// Timeline entries, newest first. Years only: the usual convention for a research CV.
+const experience = [
+  {
+    when: '2022 – present',
+    what: 'Ph.D. researcher, probabilistic machine learning',
+    where: 'Indian Institute of Technology Delhi',
+    note: 'Advised by Souvik Chakraborty and Rajdip Nayek. Scalable Gaussian processes, uncertainty-aware operator learning, non-stationary kernels; now deep generative models.',
+  },
+  {
+    when: '2022 – present',
+    what: 'Teaching assistant',
+    where: 'IIT Delhi',
+    note: 'Probabilistic machine learning, deep generative models, foundations of machine learning.',
+  },
+  {
+    when: '2021',
+    what: 'Research intern, industrial robotics',
+    where: 'Foundation for Smart Manufacturing, IIT Delhi',
+    note: 'Commissioned KUKA industrial robot arms in a robotic manufacturing cell.',
+  },
+  {
+    when: '2017 – 2020',
+    what: 'Chassis & aerodynamics lead',
+    where: 'Team Hertz Electric, Formula Student',
+    note: 'Designed the space-frame chassis and bodywork of an electric race car for two national competitions.',
+  },
+];
+const education = [
+  { when: '2022 – present', what: 'Ph.D.', where: 'Indian Institute of Technology Delhi', note: 'Thesis: scalable probabilistic machine learning.' },
+  { when: '2020', what: 'B.Tech., Mechanical Engineering', where: 'Delhi Technological University' },
+];
+const honours = [
+  'First-author paper at ICLR, 2026',
+  'Selected for Y Combinator Startup School India, Bengaluru, 2026',
+  'Best oral presentation, ICCMS, 2025',
+  'INSPIRE scholar, Government of India',
+  'All-India Rank 24, Junior Mathematics Olympiad',
+];
+const skills = [
+  ['Methods', 'Gaussian processes, kernel methods, variational inference, diffusion & flow matching, neural operators, uncertainty quantification'],
+  ['Mathematics', 'Probability & statistics, functional analysis (RKHS), numerical linear algebra, PDEs'],
+  ['Tools', 'PyTorch, JAX, Pyro, BoTorch, Python, Julia'],
+];
+---
+
+<Base title="CV · Sawan Kumar" description="Curriculum vitae of Sawan Kumar, PhD researcher in probabilistic machine learning.">
+  <article class="page cv">
+    <div class="cv-head">
+      <div>
+        <h1>Curriculum vitae</h1>
+        <p class="deck">PhD researcher in probabilistic machine learning. Moving toward deep generative models, robot learning and vision-language models.</p>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href={asset('/cv/sawan-kumar.pdf')}>PDF version</a>
+        <a class="btn" href={`mailto:${site.email}`}>Email</a>
+      </div>
+    </div>
+
+    <section class="cv-sec">
+      <h2>Experience</h2>
+      <ol class="tl">
+        {experience.map((e) => (
+          <li><span class="when">{e.when}</span><div><h3>{e.what}</h3><p class="where">{e.where}</p><p>{e.note}</p></div></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="cv-sec">
+      <h2>Education</h2>
+      <ol class="tl">
+        {education.map((e) => (
+          <li><span class="when">{e.when}</span><div><h3>{e.what}</h3><p class="where">{e.where}</p>{e.note && <p>{e.note}</p>}</div></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="cv-sec">
+      <h2>Publications</h2>
+      <ol class="pubs">
+        {papers.map((p) => (
+          <li>
+            <a href={p.data.paper ?? href('/research/')}>{p.data.title}</a>
+            <span class="by" set:html={author(p)} />
+            <span class="venue">{p.data.venue} {p.data.year}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="meta">* equal contribution. Full list on <a href={links.scholar}>Google Scholar</a>.</p>
+    </section>
+
+    <div class="cv-two">
+      <section class="cv-sec">
+        <h2>Honours</h2>
+        <ul class="plain">{honours.map((h) => <li>{h}</li>)}</ul>
+      </section>
+      <section class="cv-sec">
+        <h2>Skills</h2>
+        <dl class="skills">{skills.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      </section>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .cv-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1rem; }
+  .cv-head .deck { margin-bottom: 0; }
+  .cv-head .actions { margin: 0; }
+  .cv-sec { margin-top: 2.6rem; }
+  .cv-sec h2 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin: 0 0 1rem; font-weight: 650; }
+  .tl { list-style: none; margin: 0; padding: 0; }
+  .tl li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 1.2rem; padding: 0.9rem 0; border-top: 1px solid var(--line); }
+  .tl .when { font-family: var(--mono); font-size: 0.8rem; color: var(--a1); padding-top: 0.2rem; }
+  .tl h3 { margin: 0; font-size: 1.02rem; }
+  .tl .where { margin: 0.1rem 0 0.3rem; color: var(--muted); font-size: 0.92rem; }
+  .tl p { margin: 0; font-size: 0.94rem; }
+  .pubs { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.75rem; }
+  .pubs a { color: var(--ink); font-weight: 600; }
+  .pubs .by, .pubs .venue { display: block; font-size: 0.88rem; color: var(--muted); }
+  .pubs .venue { font-family: var(--mono); font-size: 0.78rem; color: var(--a2); }
+  .pubs :global(strong) { color: var(--ink); }
+  .cv-two { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .plain { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; }
+  .skills { margin: 0; display: grid; gap: 0.7rem; }
+  .skills dt { font-weight: 650; font-size: 0.9rem; }
+  .skills dd { margin: 0.1rem 0 0; color: var(--muted); font-size: 0.92rem; }
+  @media (max-width: 700px) {
+    .tl li { grid-template-columns: 1fr; gap: 0.3rem; }
+    .cv-two { grid-template-columns: 1fr; }
+  }
+</style>

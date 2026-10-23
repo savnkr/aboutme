@@ -1,3 +1,2 @@
 User-agent: *
-
-Sitemap: https://skumar02.com/sitemap.xml
+Allow: /

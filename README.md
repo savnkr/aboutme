@@ -1,4 +1,10 @@
-# [Hugo Academic CV Theme](https://github.com/HugoBlox/theme-academic-cv)
+# Sawan Kumar
 
-The Hugo **Academic CV Template** empowers you to easily create your job-winning online resumé, showcase your academic publications, and create online courses or knowledge bases to grow your audience.
+Editorial site for prior modeling. Astro 7, static, GitHub Pages at `/aboutme`.
 
+```sh
+npm install
+npm run dev
+```
+
+The Hugo site remains on the `hugo-legacy` branch. This branch does not replace the live site until it is merged to `main`.

@@ -1,0 +1,197 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PaperList from '../components/PaperList.astro';
+import Chip from '../components/Chip.astro';
+import Icon from '../components/Icon.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { asset, href, links, news, site, story, values } from '../lib/site';
+
+const papers = (await getCollection('papers', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const selected = papers.slice(0, 4);
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => b.data.updated.valueOf() - a.data.updated.valueOf());
+const thoughts = (await getCollection('thoughts')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const sketches = JSON.stringify([
+  { src: asset('/media/sk_art_1.jpg'), name: 'a tree I drew' },
+  { src: asset('/media/sk_art_6.jpg'), name: 'a portrait I drew' },
+]);
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Sawan Kumar">
+  <section class="hero">
+    <div>
+      <h1 class="hello" aria-label="Hi, I’m Sawan."><span class="typed" data-type="Hi, I’m Sawan." aria-hidden="true">Hi, I’m Sawan.</span><span class="caret" aria-hidden="true"></span></h1>
+      <p class="mission rise" style="--d:.25s">Building generative models that <span class="serif grad-text">know what they don’t know,</span> fast enough to act on.</p>
+      <p class="mission-sub rise" style="--d:.4s">PhD researcher in probabilistic machine learning at IIT Delhi. My PhD made uncertainty scale, for Gaussian processes and neural operators. Now I work on one-step generators (drifting models, Wasserstein gradient flows), where kernels and uncertainty meet. The goal: world models and robot policies that act in real time, and know when to ask for help.</p>
+      <div class="actions rise" style="--d:.55s">
+        <a class="btn primary" href={href('/research/')}>See my research</a>
+        <a class="btn" href={`mailto:${site.email}`}>Get in touch</a>
+      </div>
+      <a class="open-to rise" style="--d:.6s" href={`mailto:${site.email}`}><span class="pulse" aria-hidden="true"></span>Open to research collaborations</a>
+      <div class="socials rise" style="--d:.7s">
+        <a href={`mailto:${site.email}`} title="Email" aria-label="Email"><Icon name="mail" /></a>
+        <a href={links.scholar} title="Google Scholar" aria-label="Google Scholar"><Icon name="scholar" /></a>
+        <a href={links.github} title="GitHub" aria-label="GitHub"><Icon name="github" /></a>
+        <a href={links.linkedin} title="LinkedIn" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+        <a href={links.x} title="X" aria-label="X"><Icon name="x" /></a>
+      </div>
+    </div>
+    <div class="duo" aria-label="A photo of Sawan beside one of his pencil sketches">
+      <figure class="sketch"><img src={asset('/media/sk_art_2.jpg')} alt="Pencil sketch of an eye, drawn by Sawan" /><figcaption>drawn by me</figcaption></figure>
+      <figure class="photo"><img src={asset('/media/cafe.jpg')} alt="Sawan Kumar at a café" /><figcaption>me</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="genesis" data-genesis data-obs="+ where I’m heading">
+    <canvas data-figure="genesis" data-sketches={sketches} aria-label="Animation: a flow model turning Gaussian noise into one of Sawan’s pencil sketches. Move the cursor to add noise."></canvas>
+    <div class="genesis-copy">
+      <SectionHead n={1} title="Where I’m heading, in one picture" />
+      <p>Diffusion and flow models learn to turn noise into data. This one is turning Gaussian noise into <strong data-which>my sketches</strong>, live in your browser.</p>
+      <p><strong>Move your cursor through it.</strong> You add noise, and the model denoises it again. My next step is making models like this say how sure they are.</p>
+      <p class="genesis-meta mono"><span data-t>t = 0.00</span> · noise → sketch</p>
+    </div>
+  </section>
+
+  <section class="section about" data-reveal data-obs="+ who I am">
+    <SectionHead n={2} title="About" />
+    <p>I’m a final-year Ph.D. researcher at <Chip href="https://home.iitd.ac.in/">IIT Delhi</Chip>, advised by <a href="https://www.csccm.in/our-team">Souvik Chakraborty</a> and <a href="https://sites.google.com/view/rajdip-nayek/">Rajdip Nayek</a>. My thesis is on probabilistic machine learning: Gaussian processes that scale, operator learning that reports its own error, and non-stationary kernels with convergence guarantees, the subject of my first-author <Chip href="https://arxiv.org/abs/2602.00987">ICLR</Chip> paper.</p>
+    <p>I came to machine learning from building things. I designed the chassis of an electric race car with <Chip>Team Hertz Electric</Chip> and commissioned industrial robot arms at <Chip>IIT Delhi’s smart-manufacturing lab</Chip>. Those machines were precise, and they had no idea when the world stopped matching their assumptions. That gap is the problem I care about most.</p>
+    <p>Today I work on <strong>one-step generative models</strong>: drifting models, kernel drifting and Wasserstein gradient flows. They are fast enough for real-time control, and built from the kernels and spectra I know best. The direction is <strong>world models and robot policies</strong> that act quickly and can tell when they are out of their depth. Strong probability and statistics carry over directly; the rest I’m learning in the open, on this site.</p>
+  </section>
+
+  <section class="section" data-reveal data-obs="+ what’s new">
+    <SectionHead n={3} title="News" />
+    <ul class="news news-scroll" tabindex="0" aria-label="News, scrollable">
+      {news.map((item) => (
+        <li>
+          <span class="date">{item.date}</span>
+          {item.href ? <a href={href(item.href)} set:html={item.text} /> : <span set:html={item.text} />}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section" data-reveal data-obs="+ papers">
+    <SectionHead n={4} title="Selected research" link={href('/research/')} linkLabel="All papers" />
+    <PaperList papers={selected} />
+  </section>
+
+  <section class="section saga" data-story aria-label="How I got here" data-obs="+ my story">
+    <div class="saga-visual card-box" aria-hidden="true">
+      <canvas data-figure="story"></canvas>
+      <ol class="saga-dots">{story.map(() => <li></li>)}</ol>
+    </div>
+    <div>
+      <SectionHead n={5} title="How I got here" />
+      {story.map((chapter) => (
+        <article class="chapter" data-chapter>
+          <p class="when"><span class="pill mono">{chapter.when}</span><span class="meta">{chapter.where}</span></p>
+          <h3>{chapter.title}</h3>
+          <p>{chapter.text}</p>
+          <p class="lesson">{chapter.lesson}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+
+  <section class="section" data-reveal data-obs="+ what I build and write">
+    <SectionHead n={6} title="Explore" />
+    <div class="doors">
+      <a class="door card-box" href={href('/projects/')}>
+        <div class="door-art">
+          <img src={asset('/blog/wavelets/era5.jpg')} alt="" loading="lazy" />
+          <img src={asset('/projects/car-aero.svg')} alt="" loading="lazy" />
+          <img src={asset('/papers/thumbs/rwf.jpg')} alt="" loading="lazy" />
+        </div>
+        <h3>Projects</h3>
+        <p>Generative models where the stakes are real: weather risk, robots that ask, engineering design.</p>
+        <p class="meta">{projects.length} in the lab</p>
+        <span class="more">See projects →</span>
+      </a>
+      <a class="door card-box" href={href('/blog/')}>
+        <div class="door-art">{posts.slice(0, 3).map((p) => <img src={asset(p.data.cover)} alt="" loading="lazy" />)}</div>
+        <h3>Blog</h3>
+        <p>Technical notes and tutorials, from Gaussian identities to the Laplacian and wavelets on the sphere.</p>
+        <p class="meta">{posts.length} posts · latest: {posts[0]?.data.title}</p>
+        <span class="more">Read the blog →</span>
+      </a>
+      <a class="door card-box" href={href('/thoughts/')}>
+        <div class="door-art">{thoughts.slice(0, 3).map((p) => <img src={asset(p.data.cover)} alt="" loading="lazy" />)}</div>
+        <h3>Thoughts</h3>
+        <p>Essays on life and what I believe: time, doubt, meaning, and learning to see.</p>
+        <p class="meta">{thoughts.length} essays in progress</p>
+        <span class="more">Read thoughts →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" data-reveal data-obs="+ what I value">
+    <SectionHead n={7} title="What I believe" />
+    <ol class="values">
+      {values.map((v, i) => (
+        <li class="card-box" data-n={`0${i + 1}`}>
+          <h3>{v.title}</h3>
+          <p>{v.text}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section" data-reveal data-obs="+ who I am offline">
+    <div class="beyond card-box">
+      <div>
+        <SectionHead n={8} title="Away from the desk" />
+        <p>I draw with a pencil, mostly faces and quiet places, and I write short poems when something needs saying. Drawing taught me to look before I model.</p>
+        <div class="links">
+          <a class="btn" href={href('/life/#quotes')}>Quotes I keep</a>
+          <a class="btn" href={href('/life/#reading')}>Reading</a>
+          <a class="btn" href={href('/life/#running')}>Running</a>
+          <a class="btn" href={href('/life/#sketches')}>✎ Sketches</a>
+        </div>
+      </div>
+      <div class="sketch-strip">
+        {[1, 2, 4, 3].map((n) => (
+          <a href={href('/life/#sketches')}><img src={asset(`/media/sk_art_${n}.jpg`)} alt={`Pencil sketch ${n} by Sawan`} loading="lazy" /></a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-reveal data-obs="the rest is a conversation">
+    <div class="cta card-box">
+      <h2>Working on models that need to know their limits?</h2>
+      <p>Generative models, robot learning, vision-language models, uncertainty: if that’s your world, I’d love to talk. Research conversations, collaborations and opportunities are all welcome.</p>
+      <div class="actions">
+        <a class="btn" href={`mailto:${site.email}`}>✉ Email me</a>
+        <a class="btn ghost" href={href('/cv/')}>View CV</a>
+        <a class="btn ghost" href={links.scholar}>Google Scholar</a>
+      </div>
+    </div>
+  </section>
+  <aside class="meter" data-meter aria-hidden="true">
+    <div class="row"><span>uncertainty about me</span><span class="pct">±100%</span></div>
+    <canvas></canvas>
+    <div class="what">prior: just a name</div>
+  </aside>
+  <div class="read-line" aria-hidden="true"></div>
+  <script>
+    // Type the greeting once per visit to the page.
+    function typeHello() {
+      const el = document.querySelector<HTMLElement>('[data-type]');
+      if (!el || el.dataset.done) return;
+      el.dataset.done = '1';
+      const text = el.dataset.type ?? '';
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      el.textContent = '';
+      let i = 0;
+      const step = () => {
+        el.textContent = text.slice(0, ++i);
+        if (i < text.length) setTimeout(step, i === 3 ? 260 : 70 + Math.random() * 60);
+      };
+      setTimeout(step, 350);
+    }
+    document.addEventListener('astro:page-load', typeHello);
+  </script>
+</Base>

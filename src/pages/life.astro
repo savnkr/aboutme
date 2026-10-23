@@ -1,0 +1,262 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { asset, href } from '../lib/site';
+import { books, quotes, running, sketches } from '../lib/life';
+
+// Example entries are visible while developing, so the format is clear, and hidden on the live site.
+const dev = import.meta.env.DEV;
+const shelf = books.filter((b) => dev || !b.example);
+const showRunning = dev || !running.example;
+const essays = (await getCollection('thoughts')).sort((a, b) => Number(a.data.draft) - Number(b.data.draft) || b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 2);
+const months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+const maxKm = Math.max(1, ...running.months);
+// A stable colour per book, picked from the site palette.
+const tones = ['#4f46e5', '#2563eb', '#0e7490', '#0891b2', '#d97706', '#7c3aed', '#be185d'];
+const tone = (s: string) => tones[[...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % tones.length];
+---
+
+<Base title="Life · Sawan Kumar" description="Quotes I return to, books I’m reading, running, and sketches.">
+  <article class="page life">
+    <p class="kicker mono">Life</p>
+    <h1>The parts that don’t fit in a methods section.</h1>
+    <p class="deck">Lines I return to, what I’m reading, the miles I run, and the things I draw. Essays about life and what I believe are on <a href={href('/thoughts/')}>Thoughts</a>.</p>
+    <nav class="toc" aria-label="Sections">
+      <a href="#quotes">Quotes</a><a href="#reading">Reading</a><a href="#running">Running</a><a href="#sketches">Sketches</a>
+    </nav>
+
+    <section id="quotes" class="life-sec" aria-roledescription="carousel" aria-label="Quotes I return to" data-carousel>
+      <div class="q-viewport">
+        <ol class="q-track">
+          {quotes.map((q, i) => (
+            <li class="q-slide" aria-roledescription="slide" aria-label={`${i + 1} of ${quotes.length}`}>
+              <blockquote>
+                <p>“{q.text}”</p>
+                <footer>{q.who}{q.note && <span class="q-note"> · {q.note}</span>}</footer>
+              </blockquote>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="q-controls">
+        <button type="button" class="q-btn" data-prev aria-label="Previous quote">←</button>
+        <div class="q-dots" role="tablist">{quotes.map((_, i) => <button type="button" role="tab" aria-label={`Quote ${i + 1}`} data-dot={i}></button>)}</div>
+        <button type="button" class="q-btn" data-next aria-label="Next quote">→</button>
+      </div>
+    </section>
+
+    <section id="reading" class="life-sec">
+      <h2>Reading</h2>
+      {shelf.length === 0 ? (
+        <p class="empty">The shelf is being filled. Each book gets one honest line on what it changed.</p>
+      ) : (
+        <div class="shelf">
+          {shelf.map((b) => (
+            <div class="book">
+              <div class="cover" style={`--tone:${tone(b.title)}`}>
+                <span class="b-title">{b.title}</span>
+                <span class="b-author">{b.author}</span>
+              </div>
+              <p class="meta"><span class="badge">{b.status === 'reading' ? 'Reading now' : 'Read'}</span>{b.example && <span class="badge ex">example</span>}</p>
+              <p class="takeaway">{b.takeaway}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section id="running" class="life-sec">
+      <h2>Running</h2>
+      {!showRunning ? (
+        <p class="empty">The log starts soon: distance, a few races, and what the miles clear up.</p>
+      ) : (
+        <>
+          {running.example && <p class="meta"><span class="badge ex">example numbers: replace in src/lib/life.ts</span></p>}
+          <div class="stats">
+            <div class="card-box"><span class="v">{running.totalKm}</span><span class="k">km in {running.year}</span></div>
+            <div class="card-box"><span class="v">{running.longestKm}</span><span class="k">km longest run</span></div>
+            <div class="card-box"><span class="v">{running.best5k}</span><span class="k">best 5 km</span></div>
+            <div class="card-box"><span class="v">{running.best10k}</span><span class="k">best 10 km</span></div>
+          </div>
+          <figure class="bars card-box" aria-label="Kilometres per month">
+            {running.months.map((km, i) => (
+              <div class="bar" style={`--h:${(km / maxKm) * 100}%`} title={`${km} km`}>
+                <span class="km">{km || ''}</span>
+                <span class="m">{months[i]}</span>
+              </div>
+            ))}
+          </figure>
+          {running.races.length > 0 && (
+            <ul class="races">{running.races.map((r) => <li><span class="mono">{r.date}</span> {r.name} <strong>{r.time}</strong></li>)}</ul>
+          )}
+        </>
+      )}
+    </section>
+
+    <section id="sketches" class="life-sec">
+      <h2>Sketches</h2>
+      <p class="meta">Pencil and colour. Drawing taught me to look before I model.</p>
+      <div class="gallery" data-gallery>
+        {sketches.map((s, i) => (
+          <button type="button" class="tile" data-index={i} aria-label={`Open ${s.title}`}>
+            <img src={asset(`/media/${s.file}`)} alt={`${s.title}, ${s.medium}`} loading="lazy" />
+            <span class="cap">{s.title}</span>
+          </button>
+        ))}
+      </div>
+      <dialog class="lightbox" data-lightbox aria-label="Sketch viewer">
+        <img alt="" />
+        <p class="cap"></p>
+        <button type="button" class="lb-close" data-close aria-label="Close">×</button>
+        <button type="button" class="lb-nav prev" data-lb-prev aria-label="Previous sketch">←</button>
+        <button type="button" class="lb-nav next" data-lb-next aria-label="Next sketch">→</button>
+      </dialog>
+    </section>
+
+    <section class="life-sec">
+      <h2>Thoughts</h2>
+      <div class="rows">{essays.map((post) => <PostCard post={post} section="thoughts" />)}</div>
+      <p><a class="link" href={href('/thoughts/')}>All thoughts →</a></p>
+    </section>
+  </article>
+</Base>
+
+<script>
+  function bindCarousel() {
+    const root = document.querySelector<HTMLElement>('[data-carousel]');
+    if (!root || root.dataset.bound) return;
+    root.dataset.bound = '1';
+    const track = root.querySelector<HTMLElement>('.q-track')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('.q-slide')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = 0;
+    let timer = 0;
+    const go = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      track.style.transform = `translateX(${-100 * i}%)`;
+      slides.forEach((s, k) => s.setAttribute('aria-hidden', String(k !== i)));
+      dots.forEach((d, k) => d.setAttribute('aria-selected', String(k === i)));
+    };
+    const stop = () => clearInterval(timer);
+    const play = () => {
+      stop();
+      if (!still) timer = window.setInterval(() => go(i + 1), 7000);
+    };
+    root.querySelector('[data-prev]')?.addEventListener('click', () => { go(i - 1); play(); });
+    root.querySelector('[data-next]')?.addEventListener('click', () => { go(i + 1); play(); });
+    dots.forEach((d) => d.addEventListener('click', () => { go(Number(d.dataset.dot)); play(); }));
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', play);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') go(i - 1);
+      if (e.key === 'ArrowRight') go(i + 1);
+    });
+    let x0: number | null = null;
+    root.addEventListener('pointerdown', (e) => (x0 = e.clientX));
+    root.addEventListener('pointerup', (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      if (Math.abs(dx) > 40) { go(i + (dx < 0 ? 1 : -1)); play(); }
+      x0 = null;
+    });
+    go(0);
+    play();
+  }
+  function bindGallery() {
+    const g = document.querySelector<HTMLElement>('[data-gallery]');
+    const box = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+    if (!g || !box || g.dataset.bound) return;
+    g.dataset.bound = '1';
+    const tiles = [...g.querySelectorAll<HTMLButtonElement>('.tile')];
+    const img = box.querySelector('img')!;
+    const cap = box.querySelector('.cap')!;
+    let i = 0;
+    const show = (n: number) => {
+      i = (n + tiles.length) % tiles.length;
+      const t = tiles[i].querySelector('img')!;
+      img.src = t.src;
+      img.alt = t.alt;
+      cap.textContent = t.alt;
+    };
+    tiles.forEach((t, k) => t.addEventListener('click', () => { show(k); box.showModal(); }));
+    box.querySelector('[data-close]')?.addEventListener('click', () => box.close());
+    box.querySelector('[data-lb-prev]')?.addEventListener('click', () => show(i - 1));
+    box.querySelector('[data-lb-next]')?.addEventListener('click', () => show(i + 1));
+    box.addEventListener('click', (e) => { if (e.target === box) box.close(); });
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(i - 1);
+      if (e.key === 'ArrowRight') show(i + 1);
+    });
+  }
+  document.addEventListener('astro:page-load', () => { bindCarousel(); bindGallery(); });
+</script>
+
+<style>
+  .kicker { font-size: 0.78rem; color: var(--a1); margin: 0 0 0.6rem; }
+  .life h1 { font-size: clamp(2rem, 5vw, 3rem); max-width: 20ch; line-height: 1.08; }
+  .life-sec { margin-top: 3.2rem; scroll-margin-top: 80px; }
+  .life-sec h2 { font-size: 1.35rem; margin: 0 0 0.8rem; }
+  /* Quote carousel */
+  [data-carousel] { position: relative; padding: clamp(1.6rem, 4vw, 3rem) clamp(1.2rem, 4vw, 3rem) 1.2rem; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+  [data-carousel]::before { content: '“'; position: absolute; top: -0.6rem; left: 1rem; font-family: var(--serif); font-size: 9rem; line-height: 1; color: rgba(var(--a1-rgb), 0.12); pointer-events: none; }
+  .q-viewport { overflow: hidden; touch-action: pan-y; }
+  .q-track { display: flex; margin: 0; padding: 0; list-style: none; transition: transform 0.7s cubic-bezier(0.6, 0, 0.2, 1); }
+  .q-slide { flex: 0 0 100%; min-height: 11rem; display: flex; align-items: center; }
+  blockquote { margin: 0; max-width: 40ch; }
+  blockquote p { margin: 0 0 1rem; font-family: var(--serif); font-style: italic; font-size: clamp(1.45rem, 3.4vw, 2.1rem); line-height: 1.25; color: var(--ink); }
+  blockquote footer { font-size: 0.95rem; font-weight: 600; color: var(--a1); }
+  .q-note { color: var(--faint); font-weight: 400; }
+  .q-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1rem; }
+  .q-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .q-btn:hover { border-color: var(--a1); color: var(--a1); }
+  .q-dots { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
+  .q-dots button { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: 0; background: var(--line); cursor: pointer; transition: width 0.3s, background 0.3s; }
+  .q-dots button[aria-selected='true'] { width: 22px; border-radius: 4px; background: var(--grad); }
+  /* Bookshelf */
+  .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.2rem; }
+  .book .cover { aspect-ratio: 2 / 3; border-radius: 4px 10px 10px 4px; padding: 1rem 0.9rem; display: flex; flex-direction: column; justify-content: space-between; color: #fff; background: linear-gradient(160deg, var(--tone), color-mix(in srgb, var(--tone) 55%, #000)); box-shadow: inset 6px 0 0 rgba(0, 0, 0, 0.18), 0 10px 24px -14px rgba(0, 0, 0, 0.6); transition: transform 0.3s; }
+  .book:hover .cover { transform: translateY(-4px) rotate(-1deg); }
+  .b-title { font-family: var(--serif); font-size: 1.15rem; line-height: 1.15; }
+  .b-author { font-size: 0.78rem; opacity: 0.85; }
+  .book .meta { margin: 0.6rem 0 0.2rem; display: flex; gap: 0.3rem; }
+  .takeaway { margin: 0; font-size: 0.9rem; color: var(--muted); }
+  .badge.ex { color: var(--dot); background: rgba(var(--dot-rgb), 0.12); }
+  /* Running */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; margin: 0.8rem 0; }
+  .stats > div { padding: 1rem 1.1rem; display: grid; }
+  .stats .v { font-size: 1.7rem; font-weight: 750; letter-spacing: -0.03em; }
+  .stats .k { font-size: 0.82rem; color: var(--muted); }
+  .bars { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0.4rem; align-items: end; height: 180px; padding: 1rem 1rem 0.6rem; margin: 0; }
+  .bar { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+  .bar::before { content: ''; width: 100%; height: var(--h); min-height: 2px; border-radius: 6px 6px 2px 2px; background: var(--grad); order: 1; }
+  .bar .km { font-size: 0.68rem; color: var(--faint); order: 0; margin-bottom: 0.2rem; }
+  .bar .m { font-size: 0.72rem; color: var(--muted); order: 2; margin-top: 0.3rem; }
+  .races { list-style: none; padding: 0; margin: 0.8rem 0 0; }
+  .races li { padding: 0.4rem 0; border-top: 1px solid var(--line); font-size: 0.95rem; }
+  /* Sketch gallery */
+  .gallery { columns: 3 220px; column-gap: 0.8rem; }
+  .tile { position: relative; display: block; width: 100%; margin: 0 0 0.8rem; padding: 0; border: 0; background: none; cursor: zoom-in; break-inside: avoid; border-radius: 14px; overflow: hidden; }
+  .tile img { display: block; width: 100%; transition: transform 0.4s; }
+  .tile:hover img { transform: scale(1.04); }
+  .tile .cap { position: absolute; left: 0.6rem; bottom: 0.6rem; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.78rem; color: #fff; background: rgba(0, 0, 0, 0.45); opacity: 0; transition: opacity 0.3s; }
+  .tile:hover .cap, .tile:focus-visible .cap { opacity: 1; }
+  .lightbox { max-width: min(92vw, 900px); max-height: 92vh; padding: 0; border: 0; border-radius: 16px; background: var(--surface); color: var(--ink); overflow: visible; }
+  .lightbox::backdrop { background: rgba(10, 10, 20, 0.75); backdrop-filter: blur(4px); }
+  .lightbox img { display: block; max-width: 100%; max-height: 80vh; margin: 0 auto; border-radius: 16px 16px 0 0; }
+  .lightbox .cap { margin: 0; padding: 0.7rem 1rem; font-size: 0.9rem; color: var(--muted); }
+  .lb-close, .lb-nav { position: absolute; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 1.2rem; cursor: pointer; }
+  .lb-close { top: 0.6rem; right: 0.6rem; }
+  .lb-nav { top: 45%; }
+  .lb-nav.prev { left: 0.6rem; }
+  .lb-nav.next { right: 0.6rem; }
+  @media (max-width: 700px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .q-slide { min-height: 13rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .q-track { transition: none; }
+  }
+</style>

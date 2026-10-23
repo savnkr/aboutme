@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import { href } from '../lib/site';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const thoughts = (await getCollection('thoughts')).sort((a, b) => Number(a.data.draft) - Number(b.data.draft) || b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Writing · Sawan Kumar" description="Technical notes and a separate shelf for beliefs.">
+  <article class="page">
+    <h1>Writing</h1>
+    <p class="deck">Two shelves. The blog is for a derivation. Thoughts are for a belief. They ask for different attention.</p>
+    <div class="shelves stacked">
+      <section class="shelf">
+        <h2><a href={href('/blog/')}>Blog</a></h2>
+        <p class="meta">Kernels, Gaussians, concentration. <a href={href('/blog/rss.xml')}>RSS</a></p>
+        <div class="rows">{posts.map((post) => <PostCard post={post} section="blog" />)}</div>
+      </section>
+      <section class="shelf">
+        <h2><a href={href('/thoughts/')}>Thoughts</a></h2>
+        <p class="meta">Making, lines I keep, moments. <a href={href('/thoughts/rss.xml')}>RSS</a></p>
+        <div class="rows">{thoughts.map((post) => <PostCard post={post} section="thoughts" />)}</div>
+      </section>
+    </div>
+  </article>
+</Base>
