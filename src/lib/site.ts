@@ -4,8 +4,8 @@ export const site = {
   quirk: 'I sketch my priors ✎',
   title: 'Sawan Kumar · Probabilistic ML, generative models, robotics',
   description:
-    'Building generative models that know what they don’t know, fast enough to act on. PhD researcher in probabilistic ML at IIT Delhi: scalable uncertainty, one-step generators (drifting, Wasserstein gradient flows), and robot learning.',
-  tagline: 'I build generative models and machines that know what they don\'t know.',
+    'Sawan Kumar works toward trustworthy AI for the physical world: probabilistic models of weather, physics and machines that scale, and know what they don’t know. PhD researcher at IIT Delhi; on the job market for 2027.',
+  tagline: 'Trustworthy AI for the physical world.',
   openTo: 'Open to research opportunities and collaborations',
   email: 'sawan.kumar@am.iitd.ac.in',
   emailAlt: 'sawankr02@gmail.com',
@@ -50,7 +50,7 @@ export const links = {
 export const news = [
   { date: '2026', text: 'Talks on <strong>Random Wavelet Features</strong> at IIT Delhi, including new results on global ERA5 climate fields.', href: '/blog/fourier-to-wavelets/' },
   { date: '2026', text: 'Selected for <strong>Y Combinator Startup School India</strong>, Bengaluru.' },
-  { date: '2026', text: 'Now working on one-step generative models: drifting, kernel drifting and Wasserstein gradient flows.', href: '/research/' },
+  { date: '2026', text: 'New direction: fast generative models with calibrated uncertainty, for weather, climate and robotics.', href: '/research/' },
   { date: 'May 2026', text: 'Preprint: <em>Stochastic Smoothed Particle Hydrodynamics</em> for uncertainty in particle simulations.', href: '/research/' },
   { date: 'Feb 2026', text: '<strong>Random Wavelet Features</strong> accepted at <strong>ICLR 2026</strong> (first author).', href: '/research/' },
   { date: '2026', text: 'Scalable Gaussian Process Operator published in the <em>Journal of Computational Physics</em>.', href: '/research/' },
@@ -82,7 +82,7 @@ export const story = [
     when: '2022–now',
     where: 'PhD, IIT Delhi',
     title: 'So I made uncertainty my subject.',
-    text: 'With Souvik Chakraborty and Rajdip Nayek, I build models that say how sure they are: scalable Gaussian processes, operator learning with honest error bars, and non-stationary kernels with convergence guarantees, published at ICLR.',
+    text: 'With Prof. Souvik Chakraborty and Prof. Rajdip Nayek, I build models that say how sure they are: scalable Gaussian processes, operator learning with honest error bars, and non-stationary kernels with convergence guarantees, published at ICLR.',
     lesson: 'Knowing what you don’t know is a skill. It can be engineered.',
   },
   {

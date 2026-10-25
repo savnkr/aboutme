@@ -22,13 +22,12 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   <section class="hero">
     <div>
       <h1 class="hello" aria-label="Hi, I’m Sawan."><span class="typed" data-type="Hi, I’m Sawan." aria-hidden="true">Hi, I’m Sawan.</span><span class="caret" aria-hidden="true"></span></h1>
-      <p class="mission rise" style="--d:.25s">Building generative models that <span class="serif grad-text">know what they don’t know,</span> fast enough to act on.</p>
-      <p class="mission-sub rise" style="--d:.4s">PhD researcher in probabilistic machine learning at IIT Delhi. My PhD made uncertainty scale, for Gaussian processes and neural operators. Now I work on one-step generators (drifting models, Wasserstein gradient flows), where kernels and uncertainty meet. The goal: world models and robot policies that act in real time, and know when to ask for help.</p>
+      <p class="mission rise" style="--d:.25s">I work toward <strong>trustworthy AI for the physical world</strong>: models of weather, physics and machines that scale, and <span class="em">know what they don’t know.</span></p>
+      <p class="mission-sub rise" style="--d:.4s">AI is starting to forecast our weather, simulate physics and control robots. Before we can rely on it, it has to tell us how sure it is. I build the probabilistic foundations for that: priors that capture what we know about the physical world and stay honest about the rest, from Gaussian-process operators that learn physical systems to generative models of weather and climate at planetary scale. PhD researcher at IIT Delhi.</p>
       <div class="actions rise" style="--d:.55s">
         <a class="btn primary" href={href('/research/')}>See my research</a>
         <a class="btn" href={`mailto:${site.email}`}>Get in touch</a>
       </div>
-      <a class="open-to rise" style="--d:.6s" href={`mailto:${site.email}`}><span class="pulse" aria-hidden="true"></span>Open to research collaborations</a>
       <div class="socials rise" style="--d:.7s">
         <a href={`mailto:${site.email}`} title="Email" aria-label="Email"><Icon name="mail" /></a>
         <a href={links.scholar} title="Google Scholar" aria-label="Google Scholar"><Icon name="scholar" /></a>
@@ -55,9 +54,13 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 
   <section class="section about" data-reveal data-obs="+ who I am">
     <SectionHead n={2} title="About" />
-    <p>I’m a final-year Ph.D. researcher at <Chip href="https://home.iitd.ac.in/">IIT Delhi</Chip>, advised by <a href="https://www.csccm.in/our-team">Souvik Chakraborty</a> and <a href="https://sites.google.com/view/rajdip-nayek/">Rajdip Nayek</a>. My thesis is on probabilistic machine learning: Gaussian processes that scale, operator learning that reports its own error, and non-stationary kernels with convergence guarantees, the subject of my first-author <Chip href="https://arxiv.org/abs/2602.00987">ICLR</Chip> paper.</p>
+    <p>I’m a final-year Ph.D. researcher at <Chip href="https://home.iitd.ac.in/">IIT Delhi</Chip>, advised by <a href="https://www.csccm.in/our-team">Prof. Souvik Chakraborty</a> and <a href="https://sites.google.com/view/rajdip-nayek/">Prof. Rajdip Nayek</a>. My thesis is on probabilistic machine learning: Gaussian processes that scale, operator learning that reports its own error, and non-stationary kernels with convergence guarantees, the subject of my first-author <Chip href="https://arxiv.org/abs/2602.00987">ICLR</Chip> paper.</p>
     <p>I came to machine learning from building things. I designed the chassis of an electric race car with <Chip>Team Hertz Electric</Chip> and commissioned industrial robot arms at <Chip>IIT Delhi’s smart-manufacturing lab</Chip>. Those machines were precise, and they had no idea when the world stopped matching their assumptions. That gap is the problem I care about most.</p>
-    <p>Today I work on <strong>one-step generative models</strong>: drifting models, kernel drifting and Wasserstein gradient flows. They are fast enough for real-time control, and built from the kernels and spectra I know best. The direction is <strong>world models and robot policies</strong> that act quickly and can tell when they are out of their depth. Strong probability and statistics carry over directly; the rest I’m learning in the open, on this site.</p>
+    <p>Today I’m carrying that work from Gaussian processes to <strong>deep generative models</strong>, so the same honesty about uncertainty holds at the scale of <strong>weather, climate and robotics</strong>: fast enough to act on, and clear about when not to. Strong probability and statistics carry over directly; the rest I’m learning in the open, on this site.</p>
+      <div class="jobs">
+      <strong>I’m on the job market for 2027.</strong>
+      <p>Postdoc and research-scientist roles, in academia and industry. If my interests align with your team, I’d be happy to <a href={`mailto:${site.email}`}>connect</a>.</p>
+    </div>
   </section>
 
   <section class="section" data-reveal data-obs="+ what’s new">
