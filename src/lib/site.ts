@@ -95,6 +95,16 @@ export const story = [
 ];
 
 // "What I believe" on the home page. One line of title, two of meaning.
+// Research interests on the home page: one framing line and four compact areas.
+// Keep them broad and honest; nothing under review, no details of unpublished work.
+export const interestsLead = 'How a model should represent what it does not know, and use that when it acts:';
+export const interests = [
+  { title: 'Probabilistic machine learning and uncertainty quantification', text: 'prior modelling, Gaussian processes, Bayesian deep learning and kernel methods; priors that encode physical structure, posteriors that stay calibrated' },
+  { title: 'AI for science and scientific machine learning', text: 'neural operators and Gaussian-process operators for PDEs and physical systems, with uncertainty that holds at any resolution' },
+  { title: 'Generative models', text: 'fast, calibrated diffusion and flow-matching models for ensemble weather and climate forecasting, including extremes' },
+  { title: 'Embodied AI and robot learning', text: 'robot foundation models and vision-language-action policies with uncertainty estimation and failure detection, so agents know when to ask for help' },
+]
+
 export const values = [
   {
     title: 'Say what you don’t know.',

@@ -44,7 +44,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       '@type': 'Person',
       name: 'Sawan Kumar',
       jobTitle: 'PhD researcher, probabilistic machine learning',
-      knowsAbout: ['Probabilistic machine learning', 'Gaussian processes', 'Generative models', 'Uncertainty quantification', 'Robotics'],
+      knowsAbout: ['Probabilistic machine learning', 'Uncertainty quantification', 'Prior modeling', 'Probabilistic modeling', 'Trustworthy AI', 'Gaussian processes', 'Bayesian deep learning', 'Kernel methods', 'AI for science', 'Neural operators', 'Scientific machine learning', 'Generative models', 'Diffusion models', 'Flow matching', 'Weather and climate forecasting', 'Ensemble forecasting', 'Extreme weather', 'Embodied AI', 'Robot learning', 'Robot foundation models', 'Uncertainty estimation', 'Out-of-distribution detection', 'Vision-language-action models'],
       affiliation: { '@type': 'CollegeOrUniversity', name: 'Indian Institute of Technology Delhi' },
       email: site.email,
       url: canonical.origin + href('/'),
@@ -134,7 +134,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           window.dispatchEvent(new Event('themechange'));
         });
       }
+      // The header persists across client-side navigation, so its active link must be recomputed on every page.
+      function markNav() {
+        const path = location.pathname;
+        const home = document.querySelector('.site-header .wordmark')?.getAttribute('href');
+        document.querySelectorAll('.site-header .nav a').forEach((a) => {
+          const h = a.getAttribute('href');
+          const on = path === h || (h !== home && path.startsWith(h));
+          a.classList.toggle('active', on);
+          if (on) a.setAttribute('aria-current', 'page');
+          else a.removeAttribute('aria-current');
+        });
+      }
       document.addEventListener('astro:page-load', () => {
+        markNav();
         bindTheme();
         bindReveal();
         const meter = document.querySelector('[data-meter]');

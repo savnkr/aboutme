@@ -745,3 +745,11 @@ details.blk-proof[open]::after { content: '∎'; display: block; text-align: rig
 .sketch-fig { margin: 1.8rem 0; }
 .sketch-fig svg { display: block; width: 100%; height: auto; }
 .sketch-fig figcaption { text-align: center; font-family: Kalam, cursive; color: var(--muted); font-size: 1rem; }
+
+/* Research interests on the home page */
+.interests-lead { margin: 0 0 0.6rem; font-size: 1.04rem; }
+.interests { margin: 0; padding-left: 1.1rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem 2rem; }
+.interests li { color: var(--muted); line-height: 1.5; }
+.interests li strong { color: var(--ink); font-weight: 600; }
+.interests li::marker { color: var(--a1); }
+@media (max-width: 720px) { .interests { grid-template-columns: 1fr; } }

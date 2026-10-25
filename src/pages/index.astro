@@ -5,7 +5,7 @@ import PaperList from '../components/PaperList.astro';
 import Chip from '../components/Chip.astro';
 import Icon from '../components/Icon.astro';
 import SectionHead from '../components/SectionHead.astro';
-import { asset, href, links, news, site, story, values } from '../lib/site';
+import { asset, href, interests, interestsLead, links, news, site, story, values } from '../lib/site';
 
 const papers = (await getCollection('papers', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 const selected = papers.slice(0, 4);
@@ -63,8 +63,16 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     </div>
   </section>
 
+  <section class="section" data-reveal data-obs="+ what I work on">
+    <SectionHead n={3} title="Research interests" link={href('/research/')} linkLabel="Research" />
+    <p class="interests-lead">{interestsLead}</p>
+    <ul class="interests">
+      {interests.map((it) => <li><strong>{it.title}</strong>: {it.text}.</li>)}
+    </ul>
+  </section>
+
   <section class="section" data-reveal data-obs="+ what’s new">
-    <SectionHead n={3} title="News" />
+    <SectionHead n={4} title="News" />
     <ul class="news news-scroll" tabindex="0" aria-label="News, scrollable">
       {news.map((item) => (
         <li>
@@ -76,7 +84,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   </section>
 
   <section class="section" data-reveal data-obs="+ papers">
-    <SectionHead n={4} title="Selected research" link={href('/research/')} linkLabel="All papers" />
+    <SectionHead n={5} title="Selected research" link={href('/research/')} linkLabel="All papers" />
     <PaperList papers={selected} />
   </section>
 
@@ -86,7 +94,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
       <ol class="saga-dots">{story.map(() => <li></li>)}</ol>
     </div>
     <div>
-      <SectionHead n={5} title="How I got here" />
+      <SectionHead n={6} title="How I got here" />
       {story.map((chapter) => (
         <article class="chapter" data-chapter>
           <p class="when"><span class="pill mono">{chapter.when}</span><span class="meta">{chapter.where}</span></p>
@@ -100,7 +108,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 
 
   <section class="section" data-reveal data-obs="+ what I build and write">
-    <SectionHead n={6} title="Explore" />
+    <SectionHead n={7} title="Explore" />
     <div class="doors">
       <a class="door card-box" href={href('/projects/')}>
         <div class="door-art">
@@ -131,7 +139,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   </section>
 
   <section class="section" data-reveal data-obs="+ what I value">
-    <SectionHead n={7} title="What I believe" />
+    <SectionHead n={8} title="What I believe" />
     <ol class="values">
       {values.map((v, i) => (
         <li class="card-box" data-n={`0${i + 1}`}>
@@ -145,7 +153,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   <section class="section" data-reveal data-obs="+ who I am offline">
     <div class="beyond card-box">
       <div>
-        <SectionHead n={8} title="Away from the desk" />
+        <SectionHead n={9} title="Away from the desk" />
         <p>I draw with a pencil, mostly faces and quiet places, and I write short poems when something needs saying. Drawing taught me to look before I model.</p>
         <div class="links">
           <a class="btn" href={href('/life/#quotes')}>Quotes I keep</a>
