@@ -734,6 +734,11 @@ details.blk > summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; c
 details.blk > summary::before { content: '▸ '; color: var(--a1); }
 details.blk[open] > summary::before { content: '▾ '; }
 details.blk[open] > summary { margin-bottom: 0.5rem; }
+details.blk-toggle { padding: 0.6rem 1.1rem; }
+details.blk-note, details.blk-remark { background: color-mix(in srgb, var(--dot) 6%, var(--surface)); }
+details.blk-example { background: var(--surface); }
+details.blk-toggle > summary.blk-head { font-weight: 400; font-size: 0.95rem; color: var(--ink); margin: 0; }
+details.blk-toggle[open] > summary.blk-head { margin-bottom: 0.5rem; }
 details.blk-proof[open]::after { content: '∎'; display: block; text-align: right; color: var(--muted); margin-top: -0.4rem; }
 
 /* Hand-drawn diagrams (rough.js, Excalidraw style), inline so they follow the theme */

@@ -1544,3 +1544,437 @@ export function mountEvidence(canvas) {
   onTheme(draw);
   draw();
 }
+
+// ---------- Operator-valued kernels post ----------
+
+// Real DFT helpers on a periodic grid of m points (m small, so O(m^2) is fine).
+function dftModes(u, K) {
+  const m = u.length, re = new Array(K + 1).fill(0), im = new Array(K + 1).fill(0);
+  for (let k = 0; k <= K; k++)
+    for (let j = 0; j < m; j++) { const a = (2 * Math.PI * k * j) / m; re[k] += u[j] * Math.cos(a); im[k] -= u[j] * Math.sin(a); }
+  return [re, im];
+}
+function heatFlow(u, t) {
+  const m = u.length, K = m / 2;
+  const [re, im] = dftModes(u, K);
+  return Array.from({ length: m }, (_, j) => {
+    let s = 0;
+    for (let k = 0; k <= K; k++) {
+      const w = (k === 0 || k === K ? 1 : 2) * Math.exp(-4 * Math.PI * Math.PI * k * k * t);
+      const a = (2 * Math.PI * k * j) / m;
+      s += w * (re[k] * Math.cos(a) - im[k] * Math.sin(a));
+    }
+    return s / m;
+  });
+}
+
+// 1. Learn the heat operator u -> e^{tΔ}u from 40 examples; draw an input, see the prediction and its band.
+// Separable kernel k(u,u') T with noise λT: mean = Σ w_i(u) v_i, variance = (k(u,u) - k_u^T (K+λI)^{-1} k_u) T.
+export function mountOperator(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-operator]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const m = 64, N = 40, t = 0.0025, lam = 1e-4;
+  const g = seededGauss(31);
+  const smooth = (amp = 1) => {
+    const c = Array.from({ length: 7 }, (_, k) => [g() * Math.exp(-0.5 * ((k + 1) / 3.2) ** 2), g() * Math.exp(-0.5 * ((k + 1) / 3.2) ** 2)]);
+    const u = Array.from({ length: m }, (_, j) => c.reduce((s, [a, b], k) => s + a * Math.cos((2 * Math.PI * (k + 1) * j) / m) + b * Math.sin((2 * Math.PI * (k + 1) * j) / m), 0));
+    const mx = Math.max(...u.map(Math.abs)) || 1;
+    return u.map((v) => (amp * 0.8 * v) / mx);
+  };
+  const U = Array.from({ length: N }, () => smooth());
+  const V = U.map((u) => heatFlow(u, t));
+  const ip = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0) / m; // <u, u'> in L^2 by quadrature
+  const d2 = (a, b) => a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0) / m;
+  let ell2 = 0;
+  for (let i = 0; i < N; i++) for (let j = 0; j < i; j++) ell2 += d2(U[i], U[j]);
+  ell2 /= (N * (N - 1)) / 2;
+  const KERN = { linear: (a, b) => ip(a, b) / 0.12, rbf: (a, b) => Math.exp(-0.5 * d2(a, b) / ell2) };
+  let kind = 'linear';
+  let fitted;
+  const refit = () => {
+    const k = KERN[kind];
+    const K = U.map((a) => U.map((b) => k(a, b)));
+    K.forEach((r, i) => (r[i] += lam));
+    fitted = cholesky(K);
+  };
+  const tau = Math.sqrt(V.flat().reduce((s, v) => s + v * v, 0) / V.flat().length); // output scale, T = tau^2 I
+  let u = smooth();
+  const predict = () => {
+    const k = KERN[kind];
+    const ku = U.map((a) => k(a, u));
+    const w = solve(fitted, ku);
+    const mean = Array.from({ length: m }, (_, j) => w.reduce((s, wi, i) => s + wi * V[i][j], 0));
+    const v = forward(fitted, ku);
+    const s2 = Math.max(0, k(u, u) - v.reduce((s, x) => s + x * x, 0));
+    return { mean, sd: tau * Math.sqrt(s2) };
+  };
+  const draw = () => {
+    const c = theme();
+    const W = canvas.width, H = canvas.height, h = H / 2;
+    ctx.clearRect(0, 0, W, H);
+    const X = (j) => 10 * dpr + (j / (m - 1)) * (W - 20 * dpr);
+    const Y = (y, top) => (top ? 0 : h) + h / 2 - (y / 1.15) * (h / 2) * 0.86;
+    ctx.strokeStyle = c.line; ctx.lineWidth = dpr;
+    [0, 1].forEach((p) => { ctx.beginPath(); ctx.moveTo(0, p * h + h / 2); ctx.lineTo(W, p * h + h / 2); ctx.stroke(); });
+    ctx.beginPath(); ctx.moveTo(0, h); ctx.lineTo(W, h); ctx.stroke();
+    ctx.fillStyle = `rgba(${c.ink}, 0.55)`; ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    ctx.fillText('input u  (drag to draw)', 12 * dpr, 16 * dpr);
+    ctx.fillText('output G(u), the input after heat diffusion: truth (dashed), prediction ± 2 sd', 12 * dpr, h + 16 * dpr);
+    // input
+    ctx.strokeStyle = `rgb(${c.dot})`; ctx.lineWidth = 2.2 * dpr;
+    ctx.beginPath(); u.forEach((y, j) => ctx.lineTo(X(j), Y(y, true))); ctx.stroke();
+    // output
+    const { mean, sd } = predict();
+    const truth = heatFlow(u, t);
+    ctx.fillStyle = `rgba(${c.a2}, 0.2)`;
+    ctx.beginPath();
+    mean.forEach((y, j) => ctx.lineTo(X(j), Y(y + 2 * sd, false)));
+    for (let j = m - 1; j >= 0; j--) ctx.lineTo(X(j), Y(mean[j] - 2 * sd, false));
+    ctx.fill();
+    ctx.strokeStyle = `rgb(${c.a2})`; ctx.lineWidth = 2.4 * dpr;
+    ctx.beginPath(); mean.forEach((y, j) => ctx.lineTo(X(j), Y(y, false))); ctx.stroke();
+    ctx.strokeStyle = `rgb(${c.ink})`; ctx.lineWidth = 1.4 * dpr; ctx.setLineDash([5 * dpr, 4 * dpr]);
+    ctx.beginPath(); truth.forEach((y, j) => ctx.lineTo(X(j), Y(y, false))); ctx.stroke(); ctx.setLineDash([]);
+    const err = Math.sqrt(mean.reduce((s, v, j) => s + (v - truth[j]) ** 2, 0) / m);
+    if (out) out.textContent = `${kind === 'linear' ? 'linear' : 'RBF'} kernel on L² · posterior sd ${sd.toFixed(3)} · RMS error ${err.toFixed(3)}`;
+  };
+  // drawing on the input panel with a soft brush
+  let down = false;
+  const paint = (e) => {
+    const r = canvas.getBoundingClientRect();
+    const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+    if (fy > 0.5) return;
+    const y = ((0.25 - fy) / 0.25) * (1.15 / 0.86);
+    const jc = ((fx * r.width - 10) / (r.width - 20)) * (m - 1);
+    u = u.map((v, j) => { const w = Math.exp(-(((j - jc) / 1.6) ** 2)); return v + w * (y - v); });
+    draw();
+  };
+  canvas.addEventListener('pointerdown', (e) => { down = true; canvas.setPointerCapture(e.pointerId); paint(e); });
+  canvas.addEventListener('pointermove', (e) => down && paint(e));
+  canvas.addEventListener('pointerup', () => (down = false));
+  root?.querySelectorAll('[data-k]').forEach((b) => b.addEventListener('click', () => {
+    kind = b.dataset.k;
+    root.querySelectorAll('[data-k]').forEach((x) => x.classList.toggle('on', x === b));
+    refit(); draw();
+  }));
+  root?.querySelector('[data-new]')?.addEventListener('click', () => { u = smooth(); draw(); });
+  root?.querySelector('[data-wiggle]')?.addEventListener('click', () => { u = u.map((v, j) => v + 0.35 * Math.sin((2 * Math.PI * 11 * j) / m)); draw(); });
+  root?.querySelector('[data-double]')?.addEventListener('click', () => { u = u.map((v) => 2 * v); draw(); });
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  refit(); draw();
+}
+
+// 2. Two correlated outputs, separable kernel k(x,x') B with B = [[1, ρ], [ρ, 1]].
+// Output 2 is only observed on the left; for large |ρ| its posterior on the right borrows from output 1.
+export function mountCoreg(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-coreg]');
+  const input = root?.querySelector('input[data-rho]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const ell = 0.09, sn = 0.06;
+  const g = seededGauss(5);
+  const latent = (x) => 0.9 * Math.sin(2 * Math.PI * 1.3 * x) + 0.35 * Math.cos(2 * Math.PI * 3.1 * x + 0.4);
+  const other = (x) => 0.35 * Math.sin(2 * Math.PI * 2.2 * x + 1);
+  const f = [latent, (x) => 0.92 * latent(x) + other(x)];
+  const obs = [];
+  for (let i = 0; i < 11; i++) { const x = (i + 0.5) / 11; obs.push([0, x, f[0](x) + sn * g()]); }
+  for (let i = 0; i < 6; i++) { const x = 0.03 + (i * 0.4) / 5; obs.push([1, x, f[1](x) + sn * g()]); }
+  const k = (a, b) => Math.exp(-0.5 * ((a - b) / ell) ** 2);
+  const draw = () => {
+    const c = theme();
+    const rho = Number(input?.value ?? 0.9);
+    const B = [[1, rho], [rho, 1]];
+    const W = canvas.width, H = canvas.height;
+    const gw = Math.min(H * 0.62, W * 0.22);
+    const pw = W - gw - 26 * dpr;
+    const G = obs.map(([oi, xi]) => obs.map(([oj, xj]) => B[oi][oj] * k(xi, xj)));
+    G.forEach((r, i) => (r[i] += sn * sn));
+    const L = cholesky(G.map((r) => [...r]));
+    const alpha = solve(L, obs.map((o) => o[2]));
+    ctx.clearRect(0, 0, W, H);
+    const xs = Array.from({ length: 120 }, (_, i) => i / 119);
+    [0, 1].forEach((o) => {
+      const top = o * (H / 2), h = H / 2;
+      const X = (x) => 6 * dpr + x * (pw - 12 * dpr);
+      const Y = (y) => top + h / 2 - (y / 1.9) * (h / 2) * 0.88;
+      const post = xs.map((x) => {
+        const kv = obs.map(([oj, xj]) => B[o][oj] * k(x, xj));
+        const mu = kv.reduce((s, v, i) => s + v * alpha[i], 0);
+        const v = forward(L, kv);
+        return [mu, Math.sqrt(Math.max(0, 1 - v.reduce((s, t) => s + t * t, 0)))];
+      });
+      if (o === 1) { ctx.fillStyle = `rgba(${c.ink}, 0.04)`; ctx.fillRect(X(0.45), top, X(1) - X(0.45), h); }
+      ctx.fillStyle = `rgba(${o ? c.a2 : c.a1}, 0.16)`;
+      ctx.beginPath();
+      xs.forEach((x, i) => ctx.lineTo(X(x), Y(post[i][0] + 2 * post[i][1])));
+      for (let i = xs.length - 1; i >= 0; i--) ctx.lineTo(X(xs[i]), Y(post[i][0] - 2 * post[i][1]));
+      ctx.fill();
+      ctx.strokeStyle = `rgba(${c.ink}, 0.45)`; ctx.lineWidth = 1.2 * dpr; ctx.setLineDash([4 * dpr, 4 * dpr]);
+      ctx.beginPath(); xs.forEach((x) => ctx.lineTo(X(x), Y(f[o](x)))); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = `rgb(${o ? c.a2 : c.a1})`; ctx.lineWidth = 2.3 * dpr;
+      ctx.beginPath(); xs.forEach((x, i) => ctx.lineTo(X(x), Y(post[i][0]))); ctx.stroke();
+      obs.filter((d) => d[0] === o).forEach(([, x, y]) => { ctx.beginPath(); ctx.arc(X(x), Y(y), 4.5 * dpr, 0, Math.PI * 2); ctx.fillStyle = `rgb(${c.dot})`; ctx.fill(); });
+      ctx.fillStyle = `rgba(${c.ink}, 0.6)`; ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+      ctx.fillText(o ? 'output 2 (no data on the shaded part)' : 'output 1', 10 * dpr, top + 15 * dpr);
+    });
+    // block Gram heatmap
+    const n = obs.length, gx = W - gw - 6 * dpr, gy = (H - gw) / 2, cs = gw / n;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const v = G[i][j] - (i === j ? sn * sn : 0);
+      ctx.fillStyle = v >= 0 ? `rgba(${c.a1}, ${Math.min(1, v)})` : `rgba(${c.dot}, ${Math.min(1, -v)})`;
+      ctx.fillRect(gx + j * cs, gy + i * cs, cs + 0.5, cs + 0.5);
+    }
+    ctx.strokeStyle = `rgba(${c.ink}, 0.5)`; ctx.lineWidth = dpr;
+    ctx.strokeRect(gx, gy, gw, gw);
+    const s = 11 * cs;
+    ctx.beginPath(); ctx.moveTo(gx + s, gy); ctx.lineTo(gx + s, gy + gw); ctx.moveTo(gx, gy + s); ctx.lineTo(gx + gw, gy + s); ctx.stroke();
+    ctx.fillStyle = `rgba(${c.ink}, 0.6)`;
+    ctx.fillText('block Gram', gx, gy - 6 * dpr);
+    if (out) out.textContent = `ρ = ${rho.toFixed(2)}${Math.abs(rho) > 0.7 ? ' · output 2 borrows strength from output 1' : Math.abs(rho) < 0.2 ? ' · outputs nearly independent' : ''}`;
+  };
+  input?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// ---------- Gaussian identities post ----------
+// Conditioning is a slice, marginalising is a shadow. Unit variances, correlation ρ, slice at x1 = a.
+export function mountGauss2d(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-gauss2d]');
+  const rIn = root?.querySelector('input[data-rho]');
+  const aIn = root?.querySelector('input[data-a]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const pdf = (x, m, s) => Math.exp(-0.5 * ((x - m) / s) ** 2) / (s * Math.sqrt(2 * Math.PI));
+  const draw = () => {
+    const c = theme();
+    const rho = Number(rIn?.value ?? 0.7), a = Number(aIn?.value ?? 1);
+    const W = canvas.width, H = canvas.height;
+    const side = Math.min(H, W * 0.62), ox = 8 * dpr, oy = (H - side) / 2, R = 3.2;
+    const X = (x) => ox + ((x + R) / (2 * R)) * side;
+    const Y = (y) => oy + side - ((y + R) / (2 * R)) * side;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = c.line; ctx.lineWidth = dpr;
+    ctx.strokeRect(ox, oy, side, side);
+    ctx.beginPath(); ctx.moveTo(X(-R), Y(0)); ctx.lineTo(X(R), Y(0)); ctx.moveTo(X(0), Y(-R)); ctx.lineTo(X(0), Y(R)); ctx.stroke();
+    // contours of the joint at Mahalanobis radii 1, 2, 3: eigenvectors (1, ±1)/√2, eigenvalues 1 ± ρ
+    [3, 2, 1].forEach((r, i) => {
+      ctx.beginPath();
+      for (let k = 0; k <= 120; k++) {
+        const th = (2 * Math.PI * k) / 120;
+        const p = r * Math.sqrt(1 + rho) * Math.cos(th), q = r * Math.sqrt(1 - rho) * Math.sin(th);
+        const x = (p - q) / Math.SQRT2, y = (p + q) / Math.SQRT2;
+        k ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y));
+      }
+      ctx.fillStyle = `rgba(${c.a1}, ${0.07 + 0.07 * i})`; ctx.fill();
+      ctx.strokeStyle = `rgba(${c.a1}, 0.5)`; ctx.stroke();
+    });
+    // regression line E[x2 | x1] = ρ x1
+    ctx.strokeStyle = `rgba(${c.ink}, 0.5)`; ctx.setLineDash([5 * dpr, 4 * dpr]);
+    ctx.beginPath(); ctx.moveTo(X(-R), Y(-rho * R)); ctx.lineTo(X(R), Y(rho * R)); ctx.stroke(); ctx.setLineDash([]);
+    // the slice x1 = a and the conditional density drawn along it
+    const cm = rho * a, cs = Math.sqrt(1 - rho * rho);
+    ctx.strokeStyle = `rgb(${c.dot})`; ctx.lineWidth = 1.6 * dpr;
+    ctx.beginPath(); ctx.moveTo(X(a), Y(-R)); ctx.lineTo(X(a), Y(R)); ctx.stroke();
+    const amp = side * 0.11;
+    ctx.lineWidth = 2.4 * dpr; ctx.beginPath();
+    for (let k = 0; k <= 120; k++) { const y = -R + (2 * R * k) / 120; ctx.lineTo(X(a) + amp * pdf(y, cm, cs) * cs * 2.2, Y(y)); }
+    ctx.stroke();
+    // the shadow: marginal of x2 on the right
+    const mx = ox + side + 18 * dpr, mw = W - mx - 12 * dpr;
+    ctx.strokeStyle = `rgb(${c.a2})`; ctx.lineWidth = 2.4 * dpr; ctx.beginPath();
+    for (let k = 0; k <= 120; k++) { const y = -R + (2 * R * k) / 120; ctx.lineTo(mx + mw * 0.95 * pdf(y, 0, 1) / pdf(0, 0, 1) * 0.5, Y(y)); }
+    ctx.stroke();
+    ctx.strokeStyle = `rgb(${c.dot})`; ctx.beginPath();
+    for (let k = 0; k <= 120; k++) { const y = -R + (2 * R * k) / 120; ctx.lineTo(mx + mw * 0.95 * (pdf(y, cm, cs) / pdf(0, 0, 1)) * 0.5, Y(y)); }
+    ctx.stroke();
+    ctx.fillStyle = `rgba(${c.ink}, 0.65)`; ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    ctx.fillText('joint p(x1, x2)', ox + 6 * dpr, oy + 14 * dpr);
+    ctx.fillStyle = `rgb(${c.a2})`; ctx.fillText('shadow: p(x2)', mx + 6 * dpr, oy + side - 22 * dpr);
+    ctx.fillStyle = `rgb(${c.dot})`; ctx.fillText('slice: p(x2 | x1 = a)', mx + 6 * dpr, oy + side - 6 * dpr);
+    if (out) out.textContent = `ρ = ${rho.toFixed(2)}, a = ${a.toFixed(2)} · Var(x2) = 1 · Var(x2 | x1) = 1 − ρ² = ${(1 - rho * rho).toFixed(2)} = 1/P₂₂ · E[x2 | x1 = a] = ρa = ${(rho * a).toFixed(2)}`;
+  };
+  rIn?.addEventListener('input', draw); aIn?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// ---------- Concentration inequalities post ----------
+const LOGF = [0];
+for (let i = 1; i <= 4000; i++) LOGF[i] = LOGF[i - 1] + Math.log(i);
+const binomPmf = (n, k) => Math.exp(LOGF[n] - LOGF[k] - LOGF[n - k] - n * Math.LN2); // fair coin
+function logAxis(ctx, c, dpr, x0, y0, w, h, lo, hi) {
+  ctx.strokeStyle = c.line; ctx.lineWidth = dpr; ctx.fillStyle = `rgba(${c.ink}, 0.5)`;
+  ctx.font = `${10 * dpr}px ui-monospace, monospace`;
+  for (let e = Math.ceil(lo); e <= hi; e++) {
+    const y = y0 + h - ((e - lo) / (hi - lo)) * h;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + w, y); ctx.stroke();
+    if (e % 2 === 0 || hi - lo < 7) ctx.fillText(`1e${e}`, x0 + 3 * dpr, y - 3 * dpr);
+  }
+}
+
+// 1. How far can an average of n fair coin flips stray from 1/2? Exact tail vs Chebyshev vs Hoeffding.
+export function mountConc(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-conc]');
+  const nIn = root?.querySelector('input[data-n]');
+  const eIn = root?.querySelector('input[data-eps]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const tail = (n, eps) => { // exact P(|S/n - 1/2| >= eps)
+    let p = 0;
+    for (let k = 0; k <= n; k++) if (Math.abs(k / n - 0.5) >= eps - 1e-12) p += binomPmf(n, k);
+    return Math.min(1, p);
+  };
+  const NMAX = 1500;
+  const ns = Array.from({ length: 76 }, (_, i) => Math.max(2, Math.round((i / 75) * NMAX)));
+  const draw = () => {
+    const c = theme();
+    const n = Math.min(NMAX, Math.round(10 ** Number(nIn?.value ?? 2))), eps = Number(eIn?.value ?? 0.1);
+    const W = canvas.width, H = canvas.height, half = W * 0.42, pad = 10 * dpr;
+    ctx.clearRect(0, 0, W, H);
+    // left: distribution of the sample mean, tails beyond ±eps highlighted
+    const X = (x) => pad + x * (half - 2 * pad);
+    let pmax = 0;
+    for (let k = 0; k <= n; k++) pmax = Math.max(pmax, binomPmf(n, k));
+    const bw = Math.max(1 * dpr, (half - 2 * pad) / (n + 1));
+    for (let k = 0; k <= n; k++) {
+      const p = binomPmf(n, k), x = k / n, hgt = (p / pmax) * (H - 50 * dpr);
+      ctx.fillStyle = Math.abs(x - 0.5) >= eps - 1e-12 ? `rgba(${c.dot}, 0.95)` : `rgba(${c.a1}, 0.55)`;
+      ctx.fillRect(X(x) - bw / 2, H - 22 * dpr - hgt, bw * 0.9, hgt);
+    }
+    ctx.strokeStyle = `rgba(${c.ink}, 0.5)`; ctx.setLineDash([4 * dpr, 4 * dpr]);
+    [0.5 - eps, 0.5 + eps].forEach((x) => { ctx.beginPath(); ctx.moveTo(X(x), 16 * dpr); ctx.lineTo(X(x), H - 22 * dpr); ctx.stroke(); });
+    ctx.setLineDash([]);
+    ctx.fillStyle = `rgba(${c.ink}, 0.6)`; ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    ctx.fillText(`sample mean of n = ${n} flips`, pad, 13 * dpr);
+    ctx.fillText('0', X(0), H - 6 * dpr); ctx.fillText('½', X(0.5) - 3 * dpr, H - 6 * dpr); ctx.fillText('1', X(1) - 6 * dpr, H - 6 * dpr);
+    // right: tail probability against n, log scale
+    const rx = half + 30 * dpr, rw = W - rx - pad, ry = 18 * dpr, rh = H - 40 * dpr, lo = -12, hi = 0;
+    logAxis(ctx, c, dpr, rx, ry, rw, rh, lo, hi);
+    const NX = (m) => rx + (m / NMAX) * rw;
+    const LY = (p) => ry + rh - ((Math.max(Math.log10(Math.max(p, 1e-300)), lo) - lo) / (hi - lo)) * rh;
+    const curves = [
+      ['exact', c.ink, (m) => tail(m, eps), 2.6],
+      ['Chebyshev  1/(4nε²)', c.a1, (m) => Math.min(1, 1 / (4 * m * eps * eps)), 1.8],
+      ['Hoeffding  2e^(−2nε²)', c.dot, (m) => Math.min(1, 2 * Math.exp(-2 * m * eps * eps)), 1.8],
+    ];
+    curves.forEach(([name, col, f, lw], j) => {
+      ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = lw * dpr; ctx.beginPath();
+      ns.forEach((m, i) => (i ? ctx.lineTo(NX(m), LY(f(m))) : ctx.moveTo(NX(m), LY(f(m)))));
+      ctx.stroke();
+      ctx.fillStyle = `rgb(${col})`; ctx.fillText(name, rx + 60 * dpr, ry + rh - 44 * dpr + j * 14 * dpr);
+    });
+    ctx.strokeStyle = `rgba(${c.ink}, 0.35)`; ctx.beginPath(); ctx.moveTo(NX(n), ry); ctx.lineTo(NX(n), ry + rh); ctx.stroke();
+    ctx.fillStyle = `rgba(${c.ink}, 0.6)`; ctx.fillText(`n →  (0 to ${NMAX})`, rx + rw - 110 * dpr, H - 6 * dpr);
+    ctx.fillText(`P(|mean − ½| ≥ ε), log scale`, rx + 60 * dpr, 12 * dpr);
+    const t = tail(n, eps), ch = Math.min(1, 1 / (4 * n * eps * eps)), ho = Math.min(1, 2 * Math.exp(-2 * n * eps * eps));
+    if (out) out.textContent = `n = ${n}, ε = ${eps.toFixed(2)} · exact ${t.toExponential(1)} · Chebyshev ≤ ${ch.toExponential(1)} · Hoeffding ≤ ${ho.toExponential(1)}`;
+  };
+  nIn?.addEventListener('input', draw); eIn?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// 2. Every bound is a function above the indicator. X = heads in 20 fair flips; P(X ≥ a) ≤ E[g(X)] for any g ≥ 1{x ≥ a}, g ≥ 0.
+export function mountBounds(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-bounds]');
+  const aIn = root?.querySelector('input[data-a]');
+  const tIn = root?.querySelector('input[data-t]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const n = 20, mu = 10, pmf = Array.from({ length: n + 1 }, (_, k) => binomPmf(n, k));
+  const E = (g) => pmf.reduce((s, p, k) => s + p * g(k), 0);
+  const draw = () => {
+    const c = theme();
+    const a = Number(aIn?.value ?? 14), t = Number(tIn?.value ?? 0.4);
+    const W = canvas.width, H = canvas.height, pad = 12 * dpr, ymax = 2.2;
+    const X = (x) => pad + (x / n) * (W - 2 * pad);
+    const Y = (y) => H - 22 * dpr - (Math.min(y, ymax) / ymax) * (H - 40 * dpr);
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = c.line; ctx.lineWidth = dpr;
+    [0, 1, 2].forEach((v) => { ctx.beginPath(); ctx.moveTo(pad, Y(v)); ctx.lineTo(W - pad, Y(v)); ctx.stroke(); });
+    // pmf, scaled for display
+    const pm = Math.max(...pmf);
+    pmf.forEach((p, k) => {
+      ctx.fillStyle = k >= a ? `rgba(${c.dot}, 0.45)` : `rgba(${c.ink}, 0.12)`;
+      ctx.fillRect(X(k) - 6 * dpr, Y((p / pm) * 0.8), 12 * dpr, Y(0) - Y((p / pm) * 0.8));
+    });
+    const xs = Array.from({ length: 300 }, (_, i) => (i / 299) * n);
+    const curve = (g, col, lw, dash) => {
+      ctx.strokeStyle = `rgb(${col})`; ctx.lineWidth = lw * dpr; ctx.setLineDash(dash ? [5 * dpr, 4 * dpr] : []);
+      ctx.beginPath(); xs.forEach((x, i) => (i ? ctx.lineTo(X(x), Y(g(x))) : ctx.moveTo(X(x), Y(g(x))))); ctx.stroke(); ctx.setLineDash([]);
+    };
+    const gMarkov = (x) => x / a, gCheb = (x) => ((x - mu) / (a - mu)) ** 2, gChern = (x) => Math.exp(t * (x - a));
+    curve(gMarkov, c.a2, 1.8, true);
+    curve(gCheb, c.a1, 1.8, false);
+    curve(gChern, c.dot, 2.4, false);
+    // indicator
+    ctx.strokeStyle = `rgb(${c.ink})`; ctx.lineWidth = 2.6 * dpr; ctx.beginPath();
+    ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(a), Y(0)); ctx.lineTo(X(a), Y(1)); ctx.lineTo(X(n), Y(1)); ctx.stroke();
+    ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    [['indicator 1{x ≥ a}', c.ink], ['Markov  x/a', c.a2], ['Chebyshev  ((x−μ)/(a−μ))²', c.a1], [`Chernoff  e^(t(x−a)), t = ${t.toFixed(2)}`, c.dot]]
+      .forEach(([s, col], j) => { ctx.fillStyle = `rgb(${col})`; ctx.fillText(s, pad + 4 * dpr, 14 * dpr + j * 14 * dpr); });
+    const truth = E((k) => (k >= a ? 1 : 0));
+    let best = Infinity, bt = 0;
+    for (let s = 0.005; s < 3; s += 0.005) { const v = E((k) => Math.exp(s * (k - a))); if (v < best) { best = v; bt = s; } }
+    if (out) out.textContent = `P(X ≥ ${a}) = ${truth.toExponential(2)} · Markov ${Math.min(1, E(gMarkov)).toExponential(2)} · Chebyshev ${Math.min(1, E(gCheb)).toExponential(2)} · Chernoff ${Math.min(1, E(gChern)).toExponential(2)} (best t ≈ ${bt.toFixed(2)} gives ${best.toExponential(2)})`;
+  };
+  aIn?.addEventListener('input', draw); tIn?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// 3. In high dimensions a Gaussian lives on a shell: density of ||z|| / sqrt(d) for z ~ N(0, I_d).
+export function mountShell(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-shell]');
+  const dIn = root?.querySelector('input[data-d]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const lgamma = (x) => { // Stirling series, fine for x >= 0.5 after shifting
+    let s = 0;
+    while (x < 8) { s -= Math.log(x); x += 1; }
+    return s + (x - 0.5) * Math.log(x) - x + 0.5 * Math.log(2 * Math.PI) + 1 / (12 * x) - 1 / (360 * x ** 3);
+  };
+  const draw = () => {
+    const c = theme();
+    const d = Math.round(10 ** Number(dIn?.value ?? 1));
+    const W = canvas.width, H = canvas.height, pad = 12 * dpr, R = 2.2;
+    const X = (r) => pad + (r / R) * (W - 2 * pad);
+    ctx.clearRect(0, 0, W, H);
+    // density of r = ||z|| / sqrt(d): chi distribution with d degrees of freedom, rescaled
+    const logc = Math.log(2) - (d / 2) * Math.log(2) - lgamma(d / 2) + (d / 2) * Math.log(d);
+    const pdf = (r) => (r <= 0 ? 0 : Math.exp(logc + (d - 1) * Math.log(r) - (d * r * r) / 2));
+    const rs = Array.from({ length: 400 }, (_, i) => (i / 399) * R);
+    const vals = rs.map(pdf), vmax = Math.max(...vals);
+    ctx.fillStyle = `rgba(${c.a1}, 0.2)`; ctx.strokeStyle = `rgb(${c.a1})`; ctx.lineWidth = 2.4 * dpr;
+    ctx.beginPath(); ctx.moveTo(X(0), H - 22 * dpr);
+    rs.forEach((r, i) => ctx.lineTo(X(r), H - 22 * dpr - (vals[i] / vmax) * (H - 48 * dpr)));
+    ctx.lineTo(X(R), H - 22 * dpr); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = `rgb(${c.dot})`; ctx.setLineDash([5 * dpr, 4 * dpr]);
+    ctx.beginPath(); ctx.moveTo(X(1), 14 * dpr); ctx.lineTo(X(1), H - 22 * dpr); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = `rgba(${c.ink}, 0.6)`; ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    [0, 0.5, 1, 1.5, 2].forEach((r) => ctx.fillText(r.toString(), X(r) - 4 * dpr, H - 6 * dpr));
+    ctx.fillText('‖z‖ / √d', W - 80 * dpr, H - 6 * dpr);
+    ctx.fillText(`d = ${d}`, pad, 14 * dpr);
+    // probability mass within 10% of the shell radius, by numerical integration
+    let tot = 0, inn = 0;
+    rs.forEach((r, i) => { tot += vals[i]; if (Math.abs(r - 1) <= 0.1) inn += vals[i]; });
+    if (out) out.textContent = `d = ${d} · P(0.9 ≤ ‖z‖/√d ≤ 1.1) ≈ ${(inn / tot).toFixed(3)} · almost no mass near the centre once d is large`;
+  };
+  dIn?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}

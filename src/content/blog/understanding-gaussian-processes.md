@@ -3,7 +3,7 @@ title: "Gaussian processes, from first principles"
 description: "From Bayesian linear regression to kernels, exact conditioning, the marginal likelihood and a working implementation. Every step derived, nothing skipped; every idea interactive."
 date: 2024-06-07
 updated: 2026-10-26
-cover: /blog/thumbs/gp.jpg
+cover: /blog/thumbs/gp.png
 tags: [gaussian-processes, kernels, bayesian, tutorial]
 ---
 

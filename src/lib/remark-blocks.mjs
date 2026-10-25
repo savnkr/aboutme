@@ -2,7 +2,8 @@
 //
 //   :::definition[Gaussian process]      → a labelled "Definition" box
 //   :::theorem / :::lemma / :::proposition / :::corollary
-//   :::note / :::question / :::example / :::remark
+//   :::question                          → a labelled box
+//   :::note / :::remark / :::example    → a collapsed <details> toggle, titled like a box
 //   :::proof[optional title]             → a collapsed <details> "Proof" toggle
 //   :::answer                            → a collapsed "Answer" toggle (for questions)
 //
@@ -22,6 +23,8 @@ const LABELS = {
 };
 const NUMBERED = new Set(['definition', 'theorem', 'lemma', 'proposition', 'corollary', 'example', 'question']);
 const FOLDED = { proof: 'Proof', answer: 'Answer' };
+// Asides fold away like proofs, but keep their label, number and colour.
+const TOGGLED = new Set(['note', 'remark', 'example']);
 
 // Text like "ratio:abc" parses as a directive; put anything that isn't ours back as plain text.
 function restore(node) {
@@ -59,10 +62,11 @@ export default function remarkBlocks() {
         return;
       }
       const n = NUMBERED.has(name) ? ` ${(counts[name] = (counts[name] || 0) + 1)}` : '';
-      node.data = { hName: 'div', hProperties: { className: ['blk', `blk-${name}`] } };
+      const toggled = TOGGLED.has(name);
+      node.data = { hName: toggled ? 'details' : 'div', hProperties: { className: ['blk', `blk-${name}`, ...(toggled ? ['blk-toggle'] : [])] } };
       node.children.unshift({
         type: 'paragraph',
-        data: { hName: 'p', hProperties: { className: ['blk-head'] } },
+        data: { hName: toggled ? 'summary' : 'p', hProperties: { className: ['blk-head'] } },
         children: [
           { type: 'strong', children: [{ type: 'text', value: `${LABELS[name]}${n}` }] },
           ...(title ? [{ type: 'text', value: ` (${title})` }] : []),
