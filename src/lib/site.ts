@@ -4,7 +4,7 @@ export const site = {
   quirk: 'I sketch my priors ✎',
   title: 'Sawan Kumar · Probabilistic ML, generative models, robotics',
   description:
-    'Sawan Kumar works toward trustworthy AI for the physical world: probabilistic models of weather, physics and machines that scale, and know what they don’t know. PhD researcher at IIT Delhi; on the job market for 2027.',
+    'Sawan Kumar works toward trustworthy AI for the physical world: systems that forecast, simulate and act, and know what they don’t know. Probabilistic foundations for generative models and autonomous agents, from weather and climate to robotics. PhD researcher at IIT Delhi; on the job market for 2027.',
   tagline: 'Trustworthy AI for the physical world.',
   openTo: 'Open to research opportunities and collaborations',
   email: 'sawan.kumar@am.iitd.ac.in',

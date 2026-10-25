@@ -18,20 +18,23 @@ export const quotes = [
 // Books. status: 'reading' | 'read'. `takeaway` is one honest sentence in your words.
 // Entries with `example: true` only show while developing (npm run dev), never on the live site.
 export const books = [
-  { title: 'Letters from a Stoic', author: 'Seneca', status: 'reading', takeaway: 'Replace with your own line.', example: true },
-  { title: 'Surely You’re Joking, Mr. Feynman!', author: 'Richard Feynman', status: 'read', takeaway: 'Replace with your own line.', example: true },
+  { title: 'Letters from a Stoic', author: 'Seneca', status: 'reading', takeaway: '' },
+  { title: 'Surely You’re Joking, Mr. Feynman!', author: 'Richard Feynman', status: 'read', takeaway: '' },
 ];
 
 // Running. Totals are yours to update; `months` is km per month for the current year (Jan first).
 export const running = {
-  example: true, // set to false once these are your real numbers
+  example: false,
+  // Only real numbers here. Leave a field empty ('' or []) and it is hidden on the page.
+  best5k: '31:34',
+  best5kNote: '5.02 km at 6:17 /km',
+  best10k: '≈ 1:05:30',
+  best10kNote: 'estimated from 5K pace (Riegel)',
+  longestKm: 10,
+  totalKm: '',
   year: 2026,
-  totalKm: 412,
-  longestKm: 21.1,
-  best5k: '24:30',
-  best10k: '52:10',
-  months: [22, 30, 41, 35, 48, 26, 18, 39, 52, 61, 40, 0],
-  races: [{ date: '2026', name: 'Half marathon (example)', time: '1:58:00' }],
+  months: [] as number[], // km per month, Jan first, once you track it
+  races: [] as { date: string; name: string; time: string }[],
   note: 'Miles, and what they clear up.',
 };
 

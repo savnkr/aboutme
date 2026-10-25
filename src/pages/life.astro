@@ -59,7 +59,7 @@ const tone = (s: string) => tones[[...s].reduce((h, c) => (h * 31 + c.charCodeAt
                 <span class="b-author">{b.author}</span>
               </div>
               <p class="meta"><span class="badge">{b.status === 'reading' ? 'Reading now' : 'Read'}</span>{b.example && <span class="badge ex">example</span>}</p>
-              <p class="takeaway">{b.takeaway}</p>
+              {b.takeaway && <p class="takeaway">{b.takeaway}</p>}
             </div>
           ))}
         </div>
@@ -74,19 +74,21 @@ const tone = (s: string) => tones[[...s].reduce((h, c) => (h * 31 + c.charCodeAt
         <>
           {running.example && <p class="meta"><span class="badge ex">example numbers: replace in src/lib/life.ts</span></p>}
           <div class="stats">
-            <div class="card-box"><span class="v">{running.totalKm}</span><span class="k">km in {running.year}</span></div>
-            <div class="card-box"><span class="v">{running.longestKm}</span><span class="k">km longest run</span></div>
-            <div class="card-box"><span class="v">{running.best5k}</span><span class="k">best 5 km</span></div>
-            <div class="card-box"><span class="v">{running.best10k}</span><span class="k">best 10 km</span></div>
+            {running.best5k && <div class="card-box"><span class="v">{running.best5k}</span><span class="k">5 km · {running.best5kNote}</span></div>}
+            {running.best10k && <div class="card-box"><span class="v">{running.best10k}</span><span class="k">10 km · {running.best10kNote}</span></div>}
+            {running.longestKm && <div class="card-box"><span class="v">{running.longestKm} km</span><span class="k">longest run</span></div>}
+            {running.totalKm && <div class="card-box"><span class="v">{running.totalKm}</span><span class="k">km in {running.year}</span></div>}
           </div>
-          <figure class="bars card-box" aria-label="Kilometres per month">
-            {running.months.map((km, i) => (
-              <div class="bar" style={`--h:${(km / maxKm) * 100}%`} title={`${km} km`}>
-                <span class="km">{km || ''}</span>
-                <span class="m">{months[i]}</span>
-              </div>
-            ))}
-          </figure>
+          {running.months.length > 0 && (
+            <figure class="bars card-box" aria-label="Kilometres per month">
+              {running.months.map((km, i) => (
+                <div class="bar" style={`--h:${(km / maxKm) * 100}%`} title={`${km} km`}>
+                  <span class="km">{km || ''}</span>
+                  <span class="m">{months[i]}</span>
+                </div>
+              ))}
+            </figure>
+          )}
           {running.races.length > 0 && (
             <ul class="races">{running.races.map((r) => <li><span class="mono">{r.date}</span> {r.name} <strong>{r.time}</strong></li>)}</ul>
           )}
@@ -225,7 +227,7 @@ const tone = (s: string) => tones[[...s].reduce((h, c) => (h * 31 + c.charCodeAt
   .takeaway { margin: 0; font-size: 0.9rem; color: var(--muted); }
   .badge.ex { color: var(--dot); background: rgba(var(--dot-rgb), 0.12); }
   /* Running */
-  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; margin: 0.8rem 0; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.8rem; margin: 0.8rem 0; }
   .stats > div { padding: 1rem 1.1rem; display: grid; }
   .stats .v { font-size: 1.7rem; font-weight: 750; letter-spacing: -0.03em; }
   .stats .k { font-size: 0.82rem; color: var(--muted); }

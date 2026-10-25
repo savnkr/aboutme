@@ -83,8 +83,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       </nav>
     </footer>
     <script>
-      import { mountFlow, mountGenesis, mountGp, mountGpLab, mountLive, mountMeter, mountPrior, mountRobot, mountSphere, mountStory } from '../scripts/figures.js';
-      const mounts = { gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere };
+      import { mountBLR, mountEvidence, mountFeatures, mountFlow, mountGallery, mountGenesis, mountGp, mountGpLab, mountLive, mountMeter, mountPrior, mountRobot, mountSphere, mountStory } from '../scripts/figures.js';
+      const mounts = { gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence };
       function bindFigures() {
         document.querySelectorAll('canvas[data-figure]').forEach((canvas) => {
           if (canvas.dataset.mounted) return;

@@ -22,8 +22,8 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   <section class="hero">
     <div>
       <h1 class="hello" aria-label="Hi, I’m Sawan."><span class="typed" data-type="Hi, I’m Sawan." aria-hidden="true">Hi, I’m Sawan.</span><span class="caret" aria-hidden="true"></span></h1>
-      <p class="mission rise" style="--d:.25s">I work toward <strong>trustworthy AI for the physical world</strong>: models of weather, physics and machines that scale, and <span class="em">know what they don’t know.</span></p>
-      <p class="mission-sub rise" style="--d:.4s">AI is starting to forecast our weather, simulate physics and control robots. Before we can rely on it, it has to tell us how sure it is. I build the probabilistic foundations for that: priors that capture what we know about the physical world and stay honest about the rest, from Gaussian-process operators that learn physical systems to generative models of weather and climate at planetary scale. PhD researcher at IIT Delhi.</p>
+      <p class="mission rise" style="--d:.25s">I work toward <strong>trustworthy AI for the physical world</strong>: systems that forecast, simulate and act, and <span class="em">know what they don’t know.</span></p>
+      <p class="mission-sub rise" style="--d:.4s">As AI moves from answering questions to acting on its own (forecasting weather, simulating physics, steering robots), the more it acts, the more it matters that it knows when to trust itself. I build the probabilistic foundations for that: priors that capture what we know about the physical world and stay honest about the rest. I build them into Gaussian-process operators and deep generative models of physical systems, and into autonomous agents that see, plan and act, from weather and climate to robotics.</p>
       <div class="actions rise" style="--d:.55s">
         <a class="btn primary" href={href('/research/')}>See my research</a>
         <a class="btn" href={`mailto:${site.email}`}>Get in touch</a>

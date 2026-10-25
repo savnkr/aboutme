@@ -1240,3 +1240,307 @@ export function mountSphere(canvas) {
   onTheme(kick);
   sync();
 }
+
+// ---------- Figures for the Gaussian-process tutorial ----------
+
+// Seeded normal draws, so a figure looks the same on every visit.
+function seededGauss(seed) {
+  let s = seed >>> 0 || 1;
+  const u = () => ((s = (s * 1664525 + 1013904223) >>> 0) + 0.5) / 4294967296;
+  return () => Math.sqrt(-2 * Math.log(u())) * Math.cos(2 * Math.PI * u());
+}
+
+// Shared plotting frame: x in [0, 1], y in [-ymax, ymax].
+function frame(canvas, ymax = 2.4) {
+  const W = canvas.width;
+  const H = canvas.height;
+  return { W, H, X: (x) => x * W, Y: (y) => H / 2 - (y / ymax) * (H / 2) * 0.92 };
+}
+function gridLines(ctx, W, H, c, dpr) {
+  ctx.strokeStyle = c.line;
+  ctx.lineWidth = dpr;
+  for (let g = 1; g < 10; g++) {
+    ctx.beginPath();
+    ctx.moveTo((g / 10) * W, 0);
+    ctx.lineTo((g / 10) * W, H);
+    ctx.stroke();
+  }
+}
+
+// 1. Bayesian linear regression: f(x) = w0 + w1 x, w ~ N(0, I). Click to add data.
+export function mountBLR(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-blr]');
+  let dpr = fit(canvas);
+  const sn2 = 0.3 ** 2;
+  const gauss = seededGauss(7);
+  const Z = Array.from({ length: 14 }, () => [gauss(), gauss()]);
+  let data = [];
+  const toX = (x) => 2 * x - 1; // plot [0,1] -> feature input [-1,1]
+  const draw = () => {
+    const c = theme();
+    const { W, H, X, Y } = frame(canvas, 3);
+    ctx.clearRect(0, 0, W, H);
+    gridLines(ctx, W, H, c, dpr);
+    // posterior precision A = I + Phi^T Phi / sn2, covariance S = A^-1, mean m = S Phi^T y / sn2
+    let a00 = 1, a01 = 0, a11 = 1, b0 = 0, b1 = 0;
+    for (const [x, y] of data) {
+      const t = toX(x);
+      a00 += 1 / sn2; a01 += t / sn2; a11 += (t * t) / sn2;
+      b0 += y / sn2; b1 += (t * y) / sn2;
+    }
+    const det = a00 * a11 - a01 * a01;
+    const S = [[a11 / det, -a01 / det], [-a01 / det, a00 / det]];
+    const m = [S[0][0] * b0 + S[0][1] * b1, S[1][0] * b0 + S[1][1] * b1];
+    const L = cholesky(S.map((r) => [...r]));
+    // predictive band for f(x): phi^T S phi
+    ctx.fillStyle = `rgba(${c.a1}, 0.14)`;
+    ctx.beginPath();
+    const xs = Array.from({ length: 80 }, (_, i) => i / 79);
+    const band = xs.map((x) => {
+      const t = toX(x);
+      const mu = m[0] + m[1] * t;
+      const v = S[0][0] + 2 * S[0][1] * t + S[1][1] * t * t;
+      return [mu, Math.sqrt(v)];
+    });
+    xs.forEach((x, i) => ctx.lineTo(X(x), Y(band[i][0] + 2 * band[i][1])));
+    for (let i = xs.length - 1; i >= 0; i--) ctx.lineTo(X(xs[i]), Y(band[i][0] - 2 * band[i][1]));
+    ctx.fill();
+    // posterior samples of the weights, drawn as lines
+    ctx.lineWidth = 1.2 * dpr;
+    Z.forEach(([z0, z1], k) => {
+      const w0 = m[0] + L[0][0] * z0;
+      const w1 = m[1] + L[1][0] * z0 + L[1][1] * z1;
+      ctx.strokeStyle = `rgba(${k % 2 ? c.a2 : c.a1}, 0.5)`;
+      ctx.beginPath();
+      ctx.moveTo(X(0), Y(w0 - w1));
+      ctx.lineTo(X(1), Y(w0 + w1));
+      ctx.stroke();
+    });
+    data.forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.arc(X(x), Y(y), 5.5 * dpr, 0, Math.PI * 2);
+      ctx.fillStyle = `rgb(${c.dot})`;
+      ctx.fill();
+    });
+    const out = root?.querySelector('[data-out]');
+    if (out) out.textContent = data.length ? `N = ${data.length}` : 'N = 0 (prior)';
+  };
+  canvas.addEventListener('click', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (0.5 - (e.clientY - r.top) / r.height) * 2 * 3 / 0.92;
+    if (data.length < 30) data.push([x, y]);
+    draw();
+  });
+  root?.querySelector('[data-reset]')?.addEventListener('click', () => { data = []; draw(); });
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// 2. From features to a GP: f(x) = sum_m w_m phi_m(x), Gaussian-bump features, w_m ~ N(0, s^2).
+export function mountFeatures(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-features]');
+  const input = root?.querySelector('input[data-m]');
+  const label = root?.querySelector('[data-out]');
+  const steps = [1, 2, 4, 8, 16, 32, 64, 256];
+  let dpr = fit(canvas);
+  const width = 0.07;
+  const draw = () => {
+    const M = steps[Number(input?.value ?? 4)];
+    const c = theme();
+    const { W, H, X, Y } = frame(canvas);
+    ctx.clearRect(0, 0, W, H);
+    gridLines(ctx, W, H, c, dpr);
+    const centres = Array.from({ length: M }, (_, i) => (M === 1 ? 0.5 : -0.15 + (1.3 * i) / (M - 1)));
+    const phi = (m, x) => Math.exp(-0.5 * ((x - centres[m]) / width) ** 2);
+    // scale weights so the prior variance at the centre of the plot is about one
+    let v = 0;
+    for (let m = 0; m < M; m++) v += phi(m, 0.5) ** 2;
+    const sw = 1 / Math.sqrt(Math.max(v, 1e-9));
+    const xs = Array.from({ length: 200 }, (_, i) => i / 199);
+    if (M <= 16) {
+      ctx.strokeStyle = `rgba(${c.ink}, 0.12)`;
+      ctx.lineWidth = dpr;
+      for (let m = 0; m < M; m++) {
+        ctx.beginPath();
+        xs.forEach((x, i) => ctx.lineTo(X(x), Y(phi(m, x) * 0.9 - 2.1)));
+        ctx.stroke();
+      }
+    }
+    for (let s = 0; s < 4; s++) {
+      const g = seededGauss(101 + s * 17 + M);
+      const w = Array.from({ length: M }, () => g() * sw);
+      ctx.strokeStyle = `rgba(${s % 2 ? c.a2 : c.a1}, 0.85)`;
+      ctx.lineWidth = 1.8 * dpr;
+      ctx.beginPath();
+      xs.forEach((x, i) => {
+        let f = 0;
+        for (let m = 0; m < M; m++) f += w[m] * phi(m, x);
+        ctx.lineTo(X(x), Y(f));
+      });
+      ctx.stroke();
+    }
+    if (label) label.textContent = `M = ${M} feature${M > 1 ? 's' : ''}`;
+  };
+  input?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// 3. Kernel gallery: prior samples for a family of kernels.
+const GALLERY = {
+  rbf: (a, b) => Math.exp(-0.5 * ((a - b) / 0.1) ** 2),
+  matern12: (a, b) => Math.exp(-Math.abs(a - b) / 0.15),
+  matern32: (a, b) => { const r = (Math.sqrt(3) * Math.abs(a - b)) / 0.12; return (1 + r) * Math.exp(-r); },
+  matern52: (a, b) => { const r = (Math.sqrt(5) * Math.abs(a - b)) / 0.12; return (1 + r + (r * r) / 3) * Math.exp(-r); },
+  periodic: (a, b) => Math.exp(-2 * Math.sin((Math.PI * Math.abs(a - b)) / 0.3) ** 2 / 0.7 ** 2),
+  linear: (a, b) => 0.2 + 3 * (a - 0.5) * (b - 0.5),
+  sum: (a, b) => Math.exp(-0.5 * ((a - b) / 0.06) ** 2) * 0.35 + 3 * (a - 0.5) * (b - 0.5),
+  locper: (a, b) => Math.exp(-0.5 * ((a - b) / 0.35) ** 2) * Math.exp(-2 * Math.sin((Math.PI * Math.abs(a - b)) / 0.18) ** 2 / 0.9 ** 2),
+};
+export function mountGallery(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-gallery-k]');
+  let dpr = fit(canvas);
+  let name = 'rbf';
+  const N = 140;
+  const xs = Array.from({ length: N }, (_, i) => i / (N - 1));
+  const cache = {};
+  const samplesFor = (key) => {
+    if (cache[key]) return cache[key];
+    const k = GALLERY[key];
+    const K = xs.map((a) => xs.map((b) => k(a, b)));
+    K.forEach((r, i) => (r[i] += 1e-6));
+    const L = cholesky(K);
+    const out = [0, 1, 2].map((s) => {
+      const g = seededGauss(31 + s * 13);
+      const z = xs.map(() => g());
+      return xs.map((_, i) => { let f = 0; for (let j = 0; j <= i; j++) f += L[i][j] * z[j]; return f; });
+    });
+    return (cache[key] = out);
+  };
+  const draw = () => {
+    const c = theme();
+    const { W, H, X, Y } = frame(canvas, 3);
+    ctx.clearRect(0, 0, W, H);
+    gridLines(ctx, W, H, c, dpr);
+    samplesFor(name).forEach((f, s) => {
+      ctx.strokeStyle = `rgba(${[c.a1, c.a2, c.dot][s]}, 0.9)`;
+      ctx.lineWidth = 1.8 * dpr;
+      ctx.beginPath();
+      f.forEach((v, i) => ctx.lineTo(X(xs[i]), Y(v)));
+      ctx.stroke();
+    });
+    // inset: k(0.5, x) as a function of x
+    const k = GALLERY[name];
+    const ix = W * 0.74, iy = 10 * dpr, iw = W * 0.24, ih = H * 0.24;
+    ctx.fillStyle = `rgba(${c.ink}, 0.04)`;
+    ctx.fillRect(ix, iy, iw, ih);
+    ctx.strokeStyle = `rgb(${c.ink})`;
+    ctx.lineWidth = 1.4 * dpr;
+    ctx.beginPath();
+    const kmax = Math.max(...xs.map((x) => Math.abs(k(0.5, x))), 1e-9);
+    xs.forEach((x) => ctx.lineTo(ix + x * iw, iy + ih * 0.9 - (k(0.5, x) / kmax) * ih * 0.75));
+    ctx.stroke();
+    ctx.fillStyle = `rgba(${c.ink}, 0.6)`;
+    ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+    ctx.fillText('k(0.5, x)', ix + 6 * dpr, iy + 14 * dpr);
+  };
+  root?.querySelectorAll('[data-k]').forEach((b) => b.addEventListener('click', () => {
+    name = b.dataset.k;
+    root.querySelectorAll('[data-k]').forEach((o) => o.classList.toggle('on', o === b));
+    draw();
+  }));
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}
+
+// 4. Marginal likelihood: fit (left) and log p(y | X, l) split into data fit and complexity (right).
+export function mountEvidence(canvas) {
+  const ctx = canvas.getContext('2d');
+  const root = canvas.closest('[data-evidence]');
+  const input = root?.querySelector('input[data-ell]');
+  const out = root?.querySelector('[data-out]');
+  let dpr = fit(canvas);
+  const g = seededGauss(2024);
+  const sn = 0.15;
+  const data = Array.from({ length: 16 }, (_, i) => (i + 0.3 + 0.4 * Math.abs(g())) / 16.6)
+    .map((x) => [x, 0.9 * Math.sin(2 * Math.PI * 1.4 * x) + 0.4 * Math.cos(5 * x) + sn * g()]);
+  const n = data.length;
+  const kern = (a, b, l) => Math.exp(-0.5 * ((a - b) / l) ** 2);
+  const lml = (l) => {
+    const K = data.map((a) => data.map((b) => kern(a[0], b[0], l)));
+    K.forEach((r, i) => (r[i] += sn * sn));
+    const L = cholesky(K);
+    const y = data.map((d) => d[1]);
+    const alpha = solve(L, y);
+    const fitTerm = -0.5 * y.reduce((s, v, i) => s + v * alpha[i], 0);
+    const cplx = -L.reduce((s, r, i) => s + Math.log(r[i]), 0);
+    return { fitTerm, cplx, total: fitTerm + cplx - 0.5 * n * Math.log(2 * Math.PI), L, alpha };
+  };
+  const ells = Array.from({ length: 90 }, (_, i) => 10 ** (-2.3 + (2.3 * i) / 89));
+  const curve = ells.map((l) => lml(l));
+  const draw = () => {
+    const c = theme();
+    const W = canvas.width, H = canvas.height;
+    const l = 10 ** Number(input?.value ?? -1);
+    const half = W * 0.55;
+    ctx.clearRect(0, 0, W, H);
+    // left: posterior fit
+    const X = (x) => 8 * dpr + x * (half - 16 * dpr);
+    const Y = (y) => H / 2 - (y / 2.2) * (H / 2) * 0.9;
+    const { L, alpha } = lml(l);
+    const xs = Array.from({ length: 120 }, (_, i) => i / 119);
+    const post = xs.map((x) => {
+      const ks = data.map((d) => kern(x, d[0], l));
+      const mu = ks.reduce((s, v, i) => s + v * alpha[i], 0);
+      const v = forward(L, ks);
+      return [mu, Math.sqrt(Math.max(0, 1 - v.reduce((s, t) => s + t * t, 0)))];
+    });
+    ctx.fillStyle = `rgba(${c.a1}, 0.15)`;
+    ctx.beginPath();
+    xs.forEach((x, i) => ctx.lineTo(X(x), Y(post[i][0] + 2 * post[i][1])));
+    for (let i = xs.length - 1; i >= 0; i--) ctx.lineTo(X(xs[i]), Y(post[i][0] - 2 * post[i][1]));
+    ctx.fill();
+    ctx.strokeStyle = `rgb(${c.ink})`;
+    ctx.lineWidth = 2 * dpr;
+    ctx.beginPath();
+    xs.forEach((x, i) => ctx.lineTo(X(x), Y(post[i][0])));
+    ctx.stroke();
+    data.forEach(([x, y]) => { ctx.beginPath(); ctx.arc(X(x), Y(y), 4.5 * dpr, 0, Math.PI * 2); ctx.fillStyle = `rgb(${c.dot})`; ctx.fill(); });
+    // right: curves over log length-scale
+    const rx = half + 22 * dpr, rw = W - rx - 10 * dpr;
+    const all = curve.flatMap((t) => [t.fitTerm, t.cplx, t.total]);
+    const lo = Math.max(Math.min(...all), -60), hi = Math.max(...all);
+    const CX = (i) => rx + (i / (ells.length - 1)) * rw;
+    const CY = (v) => H - 18 * dpr - ((Math.max(v, lo) - lo) / (hi - lo)) * (H - 36 * dpr);
+    [['fitTerm', c.a1, 'data fit'], ['cplx', c.dot, 'complexity'], ['total', c.ink, 'log evidence']].forEach(([key, col, name], j) => {
+      ctx.strokeStyle = `rgb(${col})`;
+      ctx.lineWidth = (key === 'total' ? 2.4 : 1.6) * dpr;
+      ctx.beginPath();
+      curve.forEach((t, i) => ctx.lineTo(CX(i), CY(t[key])));
+      ctx.stroke();
+      ctx.fillStyle = `rgb(${col})`;
+      ctx.font = `${11 * dpr}px ui-monospace, monospace`;
+      ctx.fillText(name, rx + 4 * dpr, 14 * dpr + j * 14 * dpr);
+    });
+    const li = (Math.log10(l) + 2.3) / 2.3 * (ells.length - 1);
+    ctx.strokeStyle = `rgba(${c.a1}, 0.8)`;
+    ctx.setLineDash([4 * dpr, 4 * dpr]);
+    ctx.beginPath(); ctx.moveTo(CX(li), 0); ctx.lineTo(CX(li), H); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = `rgba(${c.ink}, 0.55)`;
+    ctx.fillText('log ℓ →', rx + rw - 52 * dpr, H - 4 * dpr);
+    const best = ells[curve.reduce((bi, t, i) => (t.total > curve[bi].total ? i : bi), 0)];
+    if (out) out.textContent = `ℓ = ${l.toFixed(3)} · log p(y | X, ℓ) = ${lml(l).total.toFixed(1)} · best ℓ ≈ ${best.toFixed(3)}`;
+  };
+  input?.addEventListener('input', draw);
+  addEventListener('resize', () => { dpr = fit(canvas); draw(); });
+  onTheme(draw);
+  draw();
+}

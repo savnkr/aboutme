@@ -2,6 +2,8 @@
 @import '@fontsource-variable/jetbrains-mono';
 @import '@fontsource/instrument-serif/400.css';
 @import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource/kalam/400.css';
+@import '@fontsource/kalam/700.css';
 @import 'katex/dist/katex.min.css';
 
 /* ---------- Tokens ----------
@@ -697,3 +699,44 @@ a.post-row:hover { text-decoration: none; transform: translateX(4px); border-col
 .jobs { margin-top: 1.6rem; padding: 1rem 1.25rem; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--dot) 35%, var(--line)); background: color-mix(in srgb, var(--dot) 9%, var(--surface)); }
 .jobs p { margin: 0; color: var(--muted); }
 .jobs strong { display: block; color: var(--ink); font-size: 1.05rem; font-weight: 650; margin-bottom: 0.15rem; }
+
+/* Interactive figures inside blog posts */
+.fig { margin: 1.8rem 0; padding: 0.8rem; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+.fig canvas { display: block; width: 100%; height: 300px; cursor: crosshair; }
+.fig figcaption, .fig .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem; margin-top: 0.6rem; font-size: 0.88rem; color: var(--muted); }
+.fig button, .fig .ghost { font: inherit; font-size: 0.82rem; padding: 0.25rem 0.7rem; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.fig .seg { display: inline-flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.25rem; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); }
+.fig .seg button { border: 0; background: none; color: var(--muted); }
+.fig .seg button.on { background: var(--a1); color: var(--bg); }
+.fig .slider { display: inline-flex; align-items: center; gap: 0.5rem; }
+.fig .slider input { accent-color: var(--a1); width: 150px; }
+.fig .insight { margin-top: 0.7rem; padding: 0.7rem 0.9rem; border-left: 3px solid var(--dot); background: var(--bg); border-radius: 0 10px 10px 0; font-size: 0.93rem; min-height: 3.5rem; }
+.prose details { margin: 0.6rem 0; padding: 0.6rem 0.9rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.prose details summary { cursor: pointer; font-weight: 600; }
+.prose table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.prose th, .prose td { padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+
+/* Maths-blog blocks (from :::definition, :::theorem, :::proof, ...) */
+.blk { margin: 1.3rem 0; padding: 0.85rem 1.1rem 0.6rem; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
+.blk > p:last-child, .blk > ul:last-child { margin-bottom: 0.3rem; }
+.blk-head { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.blk-head strong { letter-spacing: 0.01em; }
+.blk-definition { border-left: 3px solid var(--a1); }
+.blk-definition .blk-head strong { color: var(--a1); }
+.blk-theorem, .blk-lemma, .blk-proposition, .blk-corollary { border-left: 3px solid var(--ink); }
+.blk-theorem > p:not(.blk-head), .blk-lemma > p:not(.blk-head), .blk-proposition > p:not(.blk-head), .blk-corollary > p:not(.blk-head) { font-style: italic; }
+.blk-note, .blk-remark { border-left: 3px solid var(--dot); background: color-mix(in srgb, var(--dot) 6%, var(--surface)); }
+.blk-note .blk-head strong, .blk-remark .blk-head strong { color: color-mix(in srgb, var(--dot) 80%, var(--ink)); }
+.blk-question { border-left: 3px solid var(--a2); }
+.blk-example { border-left: 3px solid var(--muted); }
+details.blk { padding: 0.55rem 1rem; background: var(--bg); }
+details.blk > summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; color: var(--muted); list-style: none; }
+details.blk > summary::before { content: '▸ '; color: var(--a1); }
+details.blk[open] > summary::before { content: '▾ '; }
+details.blk[open] > summary { margin-bottom: 0.5rem; }
+details.blk-proof[open]::after { content: '∎'; display: block; text-align: right; color: var(--muted); margin-top: -0.4rem; }
+
+/* Hand-drawn diagrams (rough.js, Excalidraw style), inline so they follow the theme */
+.sketch-fig { margin: 1.8rem 0; }
+.sketch-fig svg { display: block; width: 100%; height: auto; }
+.sketch-fig figcaption { text-align: center; font-family: Kalam, cursive; color: var(--muted); font-size: 1rem; }

@@ -9,21 +9,72 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const fmt = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+// Table of contents: section headings (h2), with their h3 children, for posts with four or more sections.
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const showToc = headings.filter((h) => h.depth === 2).length >= 4;
 ---
 
 <Base title={`${post.data.title} · Sawan Kumar`} description={post.data.description}>
-  <article class="page prose">
-    <p class="meta"><a href={href('/blog/')}>Blog</a> · updated {fmt(post.data.updated)} · {minutes(post.body)} min</p>
-    <h1>{post.data.title}</h1>
-    <p>{post.data.description}</p>
-    {post.data.interactive === 'gp' && (
-      <figure class="plot-frame">
-        <canvas data-figure="gp" aria-label="Clickable Gaussian process posterior"></canvas>
-        <figcaption class="caption">Conditioning, drawn. Click to add an observation. <button type="button" data-reset>Reset</button></figcaption>
-      </figure>
+  <div class:list={['post-wrap', { 'has-toc': showToc }]}>
+    <article class="page prose">
+      <p class="meta"><a href={href('/blog/')}>Blog</a> · updated {fmt(post.data.updated)} · {minutes(post.body)} min read</p>
+      <h1>{post.data.title}</h1>
+      <p class="deck">{post.data.description}</p>
+      {showToc && (
+        <details class="toc-inline">
+          <summary>Contents</summary>
+          <ol>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </details>
+      )}
+      <Content />
+    </article>
+    {showToc && (
+      <aside class="toc-side" aria-label="On this page">
+        <p class="toc-title">On this page</p>
+        <ol data-toc>{toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`} data-slug={h.slug}>{h.text}</a></li>)}</ol>
+      </aside>
     )}
-    <Content />
-  </article>
+  </div>
 </Base>
+
+<script>
+  // Highlight the section currently in view.
+  function bindToc() {
+    const list = document.querySelector('[data-toc]');
+    if (!list || (list as HTMLElement).dataset.bound) return;
+    (list as HTMLElement).dataset.bound = '1';
+    const links = [...list.querySelectorAll<HTMLAnchorElement>('a[data-slug]')];
+    const targets = links.map((a) => document.getElementById(a.dataset.slug!)).filter(Boolean) as HTMLElement[];
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.classList.toggle('on', a.dataset.slug === e.target.id));
+      });
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    targets.forEach((t) => io.observe(t));
+  }
+  document.addEventListener('astro:page-load', bindToc);
+</script>
+
+<style>
+  .post-wrap { width: min(var(--wrap), 100% - 2 * var(--gut)); margin-inline: auto; }
+  .post-wrap .page { width: auto; margin: 0; }
+  .toc-side { display: none; }
+  .toc-inline { margin: 0 0 1.6rem; padding: 0.6rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .toc-inline summary { cursor: pointer; font-weight: 600; font-size: 0.92rem; }
+  ol { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+  li { margin: 0.15rem 0; font-size: 0.88rem; line-height: 1.35; }
+  li.d3 { padding-left: 0.9rem; font-size: 0.82rem; }
+  li a { color: var(--muted); }
+  li a:hover, li a.on { color: var(--a1); text-decoration: none; }
+  li a.on { font-weight: 600; }
+  @media (min-width: 1180px) {
+    .post-wrap.has-toc { width: min(1180px, 100% - 2 * var(--gut)); display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 2.5rem; }
+    .has-toc .toc-inline { display: none; }
+    .toc-side { display: block; position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 110px); overflow: auto; padding-top: clamp(2rem, 5vw, 3.2rem); }
+    .toc-title { margin: 0 0 0.4rem; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+    .toc-side ol { border-left: 1px solid var(--line); padding-left: 0.8rem; }
+  }
+</style>
