@@ -2,7 +2,9 @@ export const site = {
   name: 'Sawan Kumar',
   nativeName: 'सावन कुमार',
   quirk: 'I sketch my priors ✎',
-  title: 'Sawan Kumar · Probabilistic ML, generative models, robotics',
+  // Paste the content value of Google Search Console's HTML-tag verification here.
+  googleVerification: '',
+  title: 'Sawan Kumar · IIT Delhi · Probabilistic ML, generative models, robotics',
   description:
     'Sawan Kumar works toward trustworthy AI for the physical world: systems that forecast, simulate and act, and know what they don’t know. Probabilistic foundations for generative models and autonomous agents, from weather and climate to robotics. PhD researcher at IIT Delhi; on the job market for 2027.',
   tagline: 'Trustworthy AI for the physical world.',

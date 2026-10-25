@@ -18,7 +18,7 @@ const sketches = JSON.stringify([
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Base title="Sawan Kumar">
+<Base>
   <section class="hero">
     <div>
       <h1 class="hello" aria-label="Hi, I’m Sawan."><span class="typed" data-type="Hi, I’m Sawan." aria-hidden="true">Hi, I’m Sawan.</span><span class="caret" aria-hidden="true"></span></h1>

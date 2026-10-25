@@ -39,16 +39,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
     <ClientRouter />
+    {site.googleVerification && <meta name="google-site-verification" content={site.googleVerification} />}
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
+      '@type': 'ProfilePage',
+      url: canonical.origin + href('/'),
+      mainEntity: {
       '@type': 'Person',
       name: 'Sawan Kumar',
+      alternateName: 'savnkr',
+      description: site.description,
+      image: new URL(asset('/media/portrait.jpg'), Astro.site).href,
       jobTitle: 'PhD researcher, probabilistic machine learning',
       knowsAbout: ['Probabilistic machine learning', 'Uncertainty quantification', 'Prior modeling', 'Probabilistic modeling', 'Trustworthy AI', 'Gaussian processes', 'Bayesian deep learning', 'Kernel methods', 'AI for science', 'Neural operators', 'Scientific machine learning', 'Generative models', 'Diffusion models', 'Flow matching', 'Weather and climate forecasting', 'Ensemble forecasting', 'Extreme weather', 'Embodied AI', 'Robot learning', 'Robot foundation models', 'Uncertainty estimation', 'Out-of-distribution detection', 'Vision-language-action models'],
       affiliation: { '@type': 'CollegeOrUniversity', name: 'Indian Institute of Technology Delhi' },
       email: site.email,
       url: canonical.origin + href('/'),
       sameAs: [links.scholar, links.github, links.linkedin, links.openreview, links.x],
+      },
     })} />
   </head>
   <body>
