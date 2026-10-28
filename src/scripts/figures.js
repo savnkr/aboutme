@@ -1,7 +1,7 @@
 const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Colours come from the CSS tokens so every figure follows the light/dark theme.
-function theme() {
+export function theme() {
   const cs = getComputedStyle(document.documentElement);
   const g = (n) => cs.getPropertyValue(n).trim();
   return {
@@ -12,12 +12,12 @@ function theme() {
     line: g('--line') || '#e5e3ef',
   };
 }
-const onTheme = (fn) => {
+export const onTheme = (fn) => {
   addEventListener('themechange', fn);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fn);
 };
 
-function fit(canvas) {
+export function fit(canvas) {
   const dpr = Math.min(devicePixelRatio || 1, 2);
   const rect = canvas.getBoundingClientRect();
   canvas.width = Math.max(1, Math.floor(rect.width * dpr));
@@ -132,7 +132,7 @@ function kernel(a, b) {
   return Math.exp(-0.5 * ((a - b) / ell) ** 2);
 }
 
-function cholesky(K) {
+export function cholesky(K) {
   const n = K.length;
   const L = K.map((row) => row.map(() => 0));
   for (let i = 0; i < n; i++) {
@@ -943,7 +943,7 @@ const KERNELS = {
   },
 };
 
-function forward(L, b) {
+export function forward(L, b) {
   const y = [...b];
   for (let i = 0; i < y.length; i++) {
     for (let p = 0; p < i; p++) y[i] -= L[i][p] * y[p];
@@ -1244,7 +1244,7 @@ export function mountSphere(canvas) {
 // ---------- Figures for the Gaussian-process tutorial ----------
 
 // Seeded normal draws, so a figure looks the same on every visit.
-function seededGauss(seed) {
+export function seededGauss(seed) {
   let s = seed >>> 0 || 1;
   const u = () => ((s = (s * 1664525 + 1013904223) >>> 0) + 0.5) / 4294967296;
   return () => Math.sqrt(-2 * Math.log(u())) * Math.cos(2 * Math.PI * u());

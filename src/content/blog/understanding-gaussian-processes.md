@@ -1268,7 +1268,7 @@ Adapted from Marc Deisenroth's lectures:
 :::
 
 **Cost.** $O(N^3)$ time and $O(N^2)$ memory. Standard routes to scale:
-- **Inducing points**: $M \ll N$ pseudo-inputs, $O(NM^2)$ ([deep GP post](/aboutme/blog/deep-gaussian-processes/)).
+- **Inducing points**: $M \ll N$ pseudo-inputs, $O(NM^2)$ ([sparse variational GPs](/aboutme/blog/sparse-variational-gaussian-processes/)).
 - **Random features**: an explicit $D$-dimensional approximation of $k$, returning to the weight view at $O(ND^2)$ ([From Fourier to wavelets](/aboutme/blog/fourier-to-wavelets/)).
 - **Structure and iterative solvers**: Kronecker or Toeplitz structure on grids; conjugate gradients with fast matrix–vector products.
 

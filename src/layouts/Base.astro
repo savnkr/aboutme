@@ -92,7 +92,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </footer>
     <script>
       import { mountBLR, mountBounds, mountConc, mountCoreg, mountEvidence, mountFeatures, mountFlow, mountGallery, mountGauss2d, mountGenesis, mountGp, mountGpLab, mountLive, mountMeter, mountOperator, mountPrior, mountRobot, mountShell, mountSphere, mountStory } from '../scripts/figures.js';
-      const mounts = { gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
+      import { mountSvgp } from '../scripts/figures-sparse.js';
+      const mounts = { svgp: mountSvgp, gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
       function bindFigures() {
         document.querySelectorAll('canvas[data-figure]').forEach((canvas) => {
           if (canvas.dataset.mounted) return;
