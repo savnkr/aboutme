@@ -97,7 +97,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       import { mountPush, mountKL, mountFamilies } from '../scripts/figures-gen.js';
       import { mountDiffLab, mountGuidance } from '../scripts/figures-diffusion.js';
       import { mountFmPaths, mountFmSteps } from '../scripts/figures-fm.js';
-      const mounts = { svgp: mountSvgp, dgp: mountDgp, dgpfit: mountDgpFit, dgpjoint: mountDgpJoint, push: mountPush, kl: mountKL, families: mountFamilies, difflab: mountDiffLab, guidance: mountGuidance, fmpaths: mountFmPaths, fmsteps: mountFmSteps, gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
+      import { mountChord, mountOneStep, mountDrift } from '../scripts/figures-onestep.js';
+      const mounts = { svgp: mountSvgp, dgp: mountDgp, dgpfit: mountDgpFit, dgpjoint: mountDgpJoint, push: mountPush, kl: mountKL, families: mountFamilies, difflab: mountDiffLab, guidance: mountGuidance, fmpaths: mountFmPaths, fmsteps: mountFmSteps, chord: mountChord, onestep: mountOneStep, drift: mountDrift, gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
       function bindFigures() {
         document.querySelectorAll('canvas[data-figure]').forEach((canvas) => {
           if (canvas.dataset.mounted) return;
