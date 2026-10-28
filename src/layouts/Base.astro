@@ -94,7 +94,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       import { mountBLR, mountBounds, mountConc, mountCoreg, mountEvidence, mountFeatures, mountFlow, mountGallery, mountGauss2d, mountGenesis, mountGp, mountGpLab, mountLive, mountMeter, mountOperator, mountPrior, mountRobot, mountShell, mountSphere, mountStory } from '../scripts/figures.js';
       import { mountSvgp } from '../scripts/figures-sparse.js';
       import { mountDgp, mountDgpFit, mountDgpJoint } from '../scripts/figures-dgp.js';
-      const mounts = { svgp: mountSvgp, dgp: mountDgp, dgpfit: mountDgpFit, dgpjoint: mountDgpJoint, gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
+      import { mountPush, mountKL, mountFamilies } from '../scripts/figures-gen.js';
+      const mounts = { svgp: mountSvgp, dgp: mountDgp, dgpfit: mountDgpFit, dgpjoint: mountDgpJoint, push: mountPush, kl: mountKL, families: mountFamilies, gp: mountGp, flow: mountFlow, robot: mountRobot, prior: mountPrior, story: mountStory, live: mountLive, genesis: mountGenesis, lab: mountGpLab, sphere: mountSphere, blr: mountBLR, features: mountFeatures, gallery: mountGallery, evidence: mountEvidence, operator: mountOperator, coreg: mountCoreg, gauss2d: mountGauss2d, conc: mountConc, bounds: mountBounds, shell: mountShell };
       function bindFigures() {
         document.querySelectorAll('canvas[data-figure]').forEach((canvas) => {
           if (canvas.dataset.mounted) return;
