@@ -4,7 +4,7 @@ export const studying = [
   {
     area: 'Current focus',
     title: 'Drifting models and kernel drifting',
-    text: 'One-step generators trained by moving samples along a kernel-defined drift until model and data agree. My question: which kernels (and which scales) make the drift fast, faithful and honest about what it has not seen?',
+    text: 'One-step generators trained by moving samples along a kernel-defined drift until model and data agree. My question: what makes the drift fast and faithful, and can the generator tell what it has not seen?',
   },
   {
     area: 'Current focus',

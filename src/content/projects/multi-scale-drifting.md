@@ -1,11 +1,11 @@
 ---
-title: "Multi-scale kernels for one-step generation"
-summary: "Drifting models generate in one step but learn fine detail last. Multi-scale kernels that drift every frequency at once, and flag where the model has no support."
-impact: "Speed is what makes generative models usable in the real world. This is the engine behind the other projects."
+title: "One-step generators that know their limits"
+summary: "Generative models that sample in a single step are fast enough to act on. This project makes them more faithful, and lets them say where they have never seen data."
+impact: "Speed is what makes generative models usable in the real world."
 status: "In the lab"
 year: 2027
 order: 2
-tags: [drifting, kernels, generative]
+tags: [generative, uncertainty]
 figure: flow
 teaser: true
 ---

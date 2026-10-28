@@ -93,7 +93,7 @@ which is the Wasserstein gradient flow of $\mathrm{KL}(p \,\Vert\, e^{-V})$. Lan
 
 This is where my current work lives. **Drifting models** (Deng et al., 2026) train a one-step generator by moving its samples along a kernel-defined drift field until the generated and data distributions agree. Turan, Dufour and Ovsjanikov (2026) show this drift is a Wasserstein gradient flow of a kernel-smoothed KL, and that with a Gaussian kernel the drift is a difference of scores of smoothed distributions. Their spectral analysis finds a **high-frequency bottleneck** for the Gaussian kernel.
 
-That is the heat equation again: Gaussian smoothing damps frequency $\omega$ by $e^{-\lVert\omega\rVert^2 t}$, so fine detail is the last thing to be learned. Choosing the kernel in a drifting model is choosing which frequencies you are willing to wait for, which is exactly a question about multi-scale bases and wavelets.
+That is the heat equation again: Gaussian smoothing damps frequency $\omega$ by $e^{-\lVert\omega\rVert^2 t}$, so fine detail is the last thing to be learned. Choosing the kernel in a drifting model is choosing which frequencies you are willing to wait for.
 
 ## Gaussian processes: smoothness as an operator
 

@@ -167,7 +167,7 @@ They have the two properties we wanted.
 
 A tight frame is redundant: it has more atoms than dimensions. That redundancy is what lets it be both tight and localised, something no orthonormal basis on the sphere can do as cleanly.
 
-**One field, two pictures.** A random needlet expansion $\sum_k w_{jk}\psi_{jk}$ with white $w$, and band-pass-filtered white noise $\sum_{\ell,m} b_j(\ell)\,\varepsilon_{\ell m} Y_{\ell m}$, have the *same* covariance $\sum_\ell b_j(\ell)^2 \frac{2\ell+1}{4\pi}P_\ell(p\cdot q)$, so they are the same Gaussian law. In practice the second picture is cheaper: one transform and no cubature points. For isotropic fields, needlet coefficients at the same scale and well-separated centres also become asymptotically uncorrelated (Baldi, Kerkyacharian, Marinucci and Picard, 2009). That is a big part of why "one variance per scale and place" is a useful way to think about fields on the globe.
+**One field, two pictures.** A random needlet expansion $\sum_k w_{jk}\psi_{jk}$ with white $w$, and band-pass-filtered white noise $\sum_{\ell,m} b_j(\ell)\,\varepsilon_{\ell m} Y_{\ell m}$, have the *same* covariance $\sum_\ell b_j(\ell)^2 \frac{2\ell+1}{4\pi}P_\ell(p\cdot q)$, so they are the same Gaussian law. In practice the second picture is cheaper: one transform and no cubature points. For isotropic fields, needlet coefficients at the same scale and well-separated centres also become asymptotically uncorrelated (Baldi, Kerkyacharian, Marinucci and Picard, 2009).
 
 ## Self-check
 

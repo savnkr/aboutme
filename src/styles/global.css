@@ -423,7 +423,7 @@ a.hl:hover { text-decoration: none; background-image: linear-gradient(transparen
 .card:hover { text-decoration: none; transform: translateY(-3px); border-color: color-mix(in srgb, var(--a1) 40%, var(--line)); }
 .card h2, .card h3 { font-size: 1.08rem; margin: 0.35rem 0 0.4rem; }
 .card p { margin: 0; color: var(--muted); font-size: 0.94rem; }
-.card .cover { width: calc(100% + 2.4rem); margin: -1.1rem -1.2rem 0.9rem; aspect-ratio: 16 / 9; object-fit: cover; }
+.card .cover { width: calc(100% + 2.4rem); max-width: none; margin: -1.1rem -1.2rem 0.9rem; aspect-ratio: 16 / 9; object-fit: cover; }
 .card .art { height: 120px; margin: -1.1rem -1.2rem 0.9rem; border-bottom: 1px solid var(--line); }
 .card .art canvas { display: block; width: 100%; height: 100%; }
 
