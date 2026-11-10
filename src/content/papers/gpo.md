@@ -10,6 +10,8 @@ order: 2
 thumbnail: /papers/thumbs/gpo.jpg
 paper: https://arxiv.org/abs/2506.15906
 pdf: https://arxiv.org/pdf/2506.15906
+code: https://github.com/csccm-iitd/SGPO
+project: https://savnkr.github.io/LoGoS-GPO/
 bibtex: |
   @article{kumar2026gpo,
     title={From Local Interactions to Global Operators: Scalable Gaussian Process Operator for Physical Systems},

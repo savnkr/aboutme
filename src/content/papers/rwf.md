@@ -10,6 +10,8 @@ order: 1
 thumbnail: /papers/thumbs/rwf.jpg
 paper: https://arxiv.org/abs/2602.00987
 pdf: https://arxiv.org/pdf/2602.00987
+code: https://github.com/csccm-iitd/SRWF
+project: https://csccm-iitd.github.io/SRWF/
 poster: /papers/rwf-poster.pdf
 bibtex: |
   @inproceedings{kumar2026rwf,
