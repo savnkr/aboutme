@@ -1,0 +1,48 @@
+---
+// "Was this useful?" at the end of a post. A click sends a GA4 event, post_feedback, with the post's
+// collection and slug and helpful = yes | no. The answer is remembered in this browser, so a reader votes once.
+interface Props { slug: string; kind: string }
+const { slug, kind } = Astro.props;
+---
+
+<div class="feedback" data-feedback data-slug={slug} data-kind={kind}>
+  <p class="fb-q">Was this useful?</p>
+  <div class="fb-buttons">
+    <button type="button" data-vote="yes">Yes</button>
+    <button type="button" data-vote="no">Not really</button>
+  </div>
+  <p class="fb-thanks" hidden>Thanks, that helps me decide what to write next.</p>
+</div>
+
+<script>
+  function bindFeedback() {
+    document.querySelectorAll<HTMLElement>('[data-feedback]').forEach((box) => {
+      if (box.dataset.bound) return;
+      box.dataset.bound = '1';
+      const key = `feedback:${box.dataset.kind}:${box.dataset.slug}`;
+      const done = () => {
+        box.querySelector('.fb-buttons')?.setAttribute('hidden', '');
+        box.querySelector('.fb-thanks')?.removeAttribute('hidden');
+      };
+      try { if (localStorage.getItem(key)) done(); } catch {}
+      box.querySelectorAll<HTMLButtonElement>('[data-vote]').forEach((b) => b.addEventListener('click', () => {
+        const helpful = b.dataset.vote!;
+        (window as any).gtag?.('event', 'post_feedback', { helpful, post_slug: box.dataset.slug, post_type: box.dataset.kind });
+        try { localStorage.setItem(key, helpful); } catch {}
+        done();
+      }));
+    });
+  }
+  document.addEventListener('astro:page-load', bindFeedback);
+</script>
+
+<style>
+  .feedback { margin: 3rem 0 0; padding: 1.1rem 1.25rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.2rem; }
+  .fb-q { margin: 0; font-weight: 600; }
+  .fb-buttons { display: flex; gap: 0.5rem; }
+  .fb-buttons[hidden], .fb-thanks[hidden] { display: none; }
+  button { font: inherit; font-size: 0.9rem; padding: 0.35rem 0.95rem; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer; }
+  button:hover { border-color: var(--a1); color: var(--a1); }
+  button:focus-visible { outline: 2px solid var(--a1); outline-offset: 2px; }
+  .fb-thanks { margin: 0; color: var(--muted); font-size: 0.92rem; }
+</style>

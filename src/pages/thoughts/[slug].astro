@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Feedback from '../../components/Feedback.astro';
 import { href, minutes } from '../../lib/site';
 
 export async function getStaticPaths() {
@@ -18,5 +19,6 @@ const fmt = (date: Date) => date.toLocaleDateString('en-GB', { day: 'numeric', m
     <p class="meta"><a href={href('/thoughts/')}>Thoughts</a> · {fmt(post.data.updated)} · {minutes(post.body)} min</p>
     <h1>{post.data.title}</h1>
     <Content />
+      <Feedback slug={post.id} kind="thoughts" />
   </article>
 </Base>
