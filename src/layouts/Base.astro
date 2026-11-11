@@ -13,6 +13,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <html lang="en" class="no-js">
   <head>
     <meta charset="utf-8" />
+    <!-- Google Analytics (GA4). Page views are sent on astro:page-load, which fires on the first load
+         and after every client-side navigation by the ClientRouter. -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VFT9F5CBSD"></script>
+    <script is:inline>
+      if (!window.gtag) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { dataLayer.push(arguments); };
+        gtag('js', new Date());
+        gtag('config', 'G-VFT9F5CBSD', { send_page_view: false });
+        document.addEventListener('astro:page-load', () => {
+          gtag('event', 'page_view', { page_location: location.href, page_path: location.pathname, page_title: document.title });
+        });
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f6f5fb" />
     <title>{title}</title>
