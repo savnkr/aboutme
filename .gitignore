@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# private drafts, served only by the dev server (src/pages/lab); never commit
+src/lab/
+src/pages/lab/
